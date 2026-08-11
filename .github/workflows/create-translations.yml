@@ -6,6 +6,16 @@ on:
     paths:
       - 'src/content/writings/**/*.md'
       - 'src/content/memories/**/*.md'
+  workflow_dispatch:
+    inputs:
+      direction:
+        description: 'Choose the source language to translate from'
+        required: true
+        default: en-to-ja
+        type: choice
+        options:
+          - en-to-ja
+          - ja-to-en
 
 permissions:
   contents: write
@@ -15,31 +25,57 @@ jobs:
   create-translations:
     runs-on: ubuntu-latest
     if: github.actor != 'github-actions[bot]'
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Find added Markdown files
-        id: changed
+      - name: Check Gemini API key
+        id: key
+        run: |
+          if [ -n "$GEMINI_API_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Skipping translation: GEMINI_API_KEY is not configured."
+          fi
+      - name: Find new content after a push
+        id: pushed-files
+        if: github.event_name == 'push'
         run: |
           files="$(git diff --name-only --diff-filter=A HEAD^ HEAD -- 'src/content/writings/**/*.md' 'src/content/memories/**/*.md')"
           echo "files<<EOF" >> "$GITHUB_OUTPUT"
           echo "$files" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"
-      - name: Generate missing translation counterparts
-        if: steps.changed.outputs.files != ''
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node scripts/translate-content.mjs ${{ steps.changed.outputs.files }}
+      - name: Find outdated counterparts for manual translation
+        id: manual-files
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          files="$(node scripts/find-translation-updates.mjs '${{ inputs.direction }}')"
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$files" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+      - name: Generate translation counterparts
+        id: translate
+        if: steps.key.outputs.available == 'true' && (steps.pushed-files.outputs.files != '' || steps.manual-files.outputs.files != '')
+        run: |
+          files="${{ steps.pushed-files.outputs.files }}${{ steps.manual-files.outputs.files }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            node scripts/translate-content.mjs --overwrite $files
+          else
+            node scripts/translate-content.mjs $files
+          fi
+          echo "generated=true" >> "$GITHUB_OUTPUT"
       - name: Create translation pull request
-        if: steps.changed.outputs.files != ''
+        if: steps.translate.outputs.generated == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
           commit-message: 'content: add generated translations'
           branch: automation/content-translations
           delete-branch: true
           title: 'content: add generated translations'
-          body: 'Gemini generated the missing language counterparts for newly added Writing or Memory Markdown files. Please review the translations before merging.'
+          body: 'Gemini generated missing or outdated Writing / Memory translations. Please review the changes before merging.'

@@ -10,7 +10,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "translate:content": "node scripts/translate-content.mjs"
+    "translate:content": "node scripts/translate-content.mjs",
+    "translate:find-updates": "node scripts/find-translation-updates.mjs"
   },
   "dependencies": {
     "astro": "^7.2.0",

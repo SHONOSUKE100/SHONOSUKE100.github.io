@@ -104,7 +104,7 @@ The longer memory text goes here.
 
 英語・日本語はそれぞれ個別の Markdown として管理します。英語版は `src/content/writings/<slug>.md`（または `memories/<slug>.md`）、日本語版は `src/content/writings/ja/<slug>.md`（または `memories/ja/<slug>.md`）に置き、同じ `<slug>` を使って対応付けます。すべての frontmatter に `locale: en` または `locale: ja` が必要です。
 
-`.github/workflows/create-translations.yml` は、`main` に追加された Writing / Memory Markdown を検出します。反対言語の同名ファイルがまだない場合、Gemini API で翻訳版を作成し、レビュー用 PR を自動作成します。既存の翻訳ファイルは上書きしません。
+`.github/workflows/create-translations.yml` は、`main` に追加された Writing / Memory Markdown を検出します。反対言語の同名ファイルがまだない場合、Gemini API で翻訳版を作成し、レビュー用 PR を自動作成します。`GEMINI_API_KEY` が未登録の場合は失敗せず、翻訳をスキップします。
 
 GitHub リポジトリの **Settings → Secrets and variables → Actions** で、次の Secret を登録してください。
 
@@ -119,6 +119,8 @@ GEMINI_API_KEY="..." npm run translate:content -- src/content/writings/new-note.
 ```
 
 生成された翻訳は公開前に必ずレビューしてください。固有名詞、技術用語、地名、画像の alt テキストは特に確認が必要です。
+
+Actions タブから **Create translated content** を手動実行することもできます。`en-to-ja` または `ja-to-en` を選ぶと、選んだ翻訳元の最終更新が翻訳先より新しい Markdown と、翻訳先が存在しない Markdown だけを検出して更新します。手動実行では既存の翻訳 Markdown を翻訳結果で更新し、レビュー用 PR を作成します。
 
 ## 地図について
 

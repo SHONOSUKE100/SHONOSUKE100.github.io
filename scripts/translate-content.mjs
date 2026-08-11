@@ -2,9 +2,9 @@ import { access, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
 const apiKey = process.env.GEMINI_API_KEY;
-const files = process.argv.slice(2);
+const overwrite = process.argv.includes('--overwrite');
+const files = process.argv.slice(2).filter((argument) => argument !== '--overwrite');
 
-if (!apiKey) throw new Error('GEMINI_API_KEY is required.');
 if (files.length === 0) process.exit(0);
 
 function counterpart(file) {
@@ -44,7 +44,8 @@ SOURCE:\n${source}`;
 
 for (const file of files) {
   const target = counterpart(file);
-  if (!target || await exists(target)) continue;
+  if (!target || (!overwrite && await exists(target))) continue;
+  if (!apiKey) throw new Error('GEMINI_API_KEY is required.');
   const source = await readFile(file, 'utf8');
   const targetLocale = file.split(path.sep).includes('ja') ? 'en' : 'ja';
   await translate(source, target, targetLocale);
