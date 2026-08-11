@@ -16,6 +16,18 @@ on:
         options:
           - en-to-ja
           - ja-to-en
+      mode:
+        description: 'Translate only outdated counterparts, or force selected files'
+        required: true
+        default: outdated
+        type: choice
+        options:
+          - outdated
+          - force
+      files:
+        description: 'Required for force mode. Comma- or newline-separated source Markdown paths.'
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -54,8 +66,20 @@ jobs:
       - name: Find outdated counterparts for manual translation
         id: manual-files
         if: github.event_name == 'workflow_dispatch'
+        env:
+          MODE: ${{ inputs.mode }}
+          FILES: ${{ inputs.files }}
+          DIRECTION: ${{ inputs.direction }}
         run: |
-          files="$(node scripts/find-translation-updates.mjs '${{ inputs.direction }}')"
+          if [ "$MODE" = "force" ]; then
+            if [ -z "$FILES" ]; then
+              echo "::error::files is required when mode is force."
+              exit 1
+            fi
+            files="$(printf '%s' "$FILES" | tr ',' '\n' | sed '/^[[:space:]]*$/d')"
+          else
+            files="$(node scripts/find-translation-updates.mjs "$DIRECTION")"
+          fi
           echo "files<<EOF" >> "$GITHUB_OUTPUT"
           echo "$files" >> "$GITHUB_OUTPUT"
           echo "EOF" >> "$GITHUB_OUTPUT"

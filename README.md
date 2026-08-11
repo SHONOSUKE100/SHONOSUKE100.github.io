@@ -122,6 +122,21 @@ GEMINI_API_KEY="..." npm run translate:content -- src/content/writings/new-note.
 
 Actions タブから **Create translated content** を手動実行することもできます。`en-to-ja` または `ja-to-en` を選ぶと、選んだ翻訳元の最終更新が翻訳先より新しい Markdown と、翻訳先が存在しない Markdown だけを検出して更新します。手動実行では既存の翻訳 Markdown を翻訳結果で更新し、レビュー用 PR を作成します。
 
+既存記事を強制再翻訳したい場合は、Actions の **Run workflow** で次を選びます。
+
+1. `direction`: 翻訳元の言語（例: `en-to-ja`）
+2. `mode`: `force`
+3. `files`: 翻訳元 Markdown のパス。複数の場合は改行またはカンマで区切る
+
+例:
+
+```text
+src/content/writings/common-abstractions.md
+src/content/writings/software-engineering-ai-era.md
+```
+
+強制モードは更新日時を比較せず、指定した翻訳先 Markdown を Gemini の結果で更新します。作成された PR で必ず内容を確認してからマージしてください。
+
 ## 地図について
 
 Memory Map は MapLibre と OpenStreetMap のラスタタイルを使用します。ベースマップの表示にはネットワーク接続が必要です。一方、写真マーカーはサイト内の画像を用い、緯度・経度から表示位置を計算します。
