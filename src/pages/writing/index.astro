@@ -1,0 +1,8 @@
+---
+import { getCollection } from 'astro:content';
+import PageTitle from '../../components/PageTitle.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+const posts = (await getCollection('writings', ({ data }) => !data.draft && data.locale === 'en')).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+const date = new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' });
+---
+<SiteLayout title="Writing — Sho Ikeda"><PageTitle eyebrow="Writing" title="Field Notes" description="Thoughts on software, AI, law, and learning." /><section class="shell article-list">{posts.map((post) => <a class="article-row" href={`/writing/${post.id}/`}><time datetime={post.data.publishedAt.toISOString()}>{date.format(post.data.publishedAt)}</time><h2>{post.data.title}</h2><span class="tags">{post.data.tags.join(' / ')} →</span></a>)}</section></SiteLayout>

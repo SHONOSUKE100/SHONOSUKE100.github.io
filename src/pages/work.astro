@@ -1,0 +1,13 @@
+---
+import PageTitle from '../components/PageTitle.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+const projects = [
+  { number: '01', title: 'Bar Exam with BERT', description: 'A legal AI project available on GitHub.', href: 'https://github.com/SHONOSUKE100/Bar_exam_with_BERT', image: '/images/projects/barexam.jpg' },
+  { number: '02', title: 'CaseCompass', description: 'A legal precedent search application.', href: 'https://github.com/SHONOSUKE100/CaseCompass', image: '/images/projects/casecompass.jpg' },
+  { number: '03', title: 'Kotatsu', description: 'An open-source project available on GitHub.', href: 'https://github.com/SHONOSUKE100/Kotatsu', image: '/images/projects/news.jpg' },
+  { number: '04', title: 'AIagent Plurality', description: 'An open-source AI agent project available on GitHub.', href: 'https://github.com/SHONOSUKE100/AIagent_Plurality', image: '/images/projects/pulrality.jpg' },
+  { number: '05', title: 'J-Quants Data Platform', description: 'A data-platform project available on GitHub.', href: 'https://github.com/SHONOSUKE100/jquants-data-platform', image: '/images/projects/finance.jpg' },
+];
+---
+<SiteLayout title="Work — Sho Ikeda"><PageTitle eyebrow="Work" title="Projects" description="Ideas into systems." /><section class="shell projects">{projects.map((project) => <ProjectCard {project} />)}</section></SiteLayout>

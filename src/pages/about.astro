@@ -1,0 +1,60 @@
+---
+import PageTitle from '../components/PageTitle.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { site } from '../config/site';
+
+const skills = [
+  ['Data pipelines for AI', 'Build reliable ingestion and transformation pipelines in Python and Polars, so raw data becomes model-ready, traceable data.'],
+  ['Applied ML & LLM products', 'Develop forecasting models, fine-tuned legal-language models, and LLM-powered features that turn analysis into a useful user experience.'],
+  ['Production backends', 'Design Django services and APIs that connect data, models, and interfaces into dependable applications with clear boundaries.'],
+  ['Cloud operations', 'Package and operate services with Docker, AWS Lambda, CloudWatch, and CloudFormation so an experiment can become a maintainable product.'],
+];
+
+const projects = [
+  ['CaseCompass', 'A legal precedent search application', 'https://github.com/SHONOSUKE100/CaseCompass'],
+  ['Bar Exam with BERT', 'Bar-exam PDF structuring and BERT fine-tuning', 'https://github.com/SHONOSUKE100/Bar_exam_with_BERT'],
+  ['J-Quants Data Platform', 'A data platform for Japanese market data', 'https://github.com/SHONOSUKE100/jquants-data-platform'],
+];
+---
+
+<SiteLayout title="About — Sho Ikeda">
+  <PageTitle eyebrow="About" title="About Sho" description="To build better systems, I learn software engineering, design, and AI." profileImage={{ src: '/images/profile.png', alt: 'A white teddy bear' }} />
+
+  <section class="shell about-intro">
+    <p class="about-statement">Beyond AI models,<br /><em>I design better systems.</em></p>
+    <p>I am an engineer at an education company, building my practice at the intersection of software, data, and AI. My university studies in international law and hands-on machine-learning internship experience have shaped my interest in how technology, rules, and thoughtful design can make systems work better for people.</p>
+  </section>
+
+  <section class="shell about-history" aria-labelledby="history-title">
+    <div><p class="eyebrow">Background</p><h2 id="history-title">Learning &amp; Work</h2></div>
+    <ol>
+      <li><span class="history-marker">01</span><div><h3>Chuo University / Bachelor of Laws</h3><p>Apr 2022 — Mar 2026 · Studied law and international law, alongside AI and data science.</p></div></li>
+      <li><span class="history-marker">02</span><div><h3>ACES, Inc. / Machine Learning Engineer Intern</h3><p>Sep 2024 — Mar 2026 · Built practical ML applications with Django, React, and data-focused engineering.</p></div></li>
+      <li><span class="history-marker">03</span><div><h3>UC Davis / Short-Term Study Abroad</h3><p>Aug 2025 — Sep 2025 · Studied abroad in California and broadened my perspective through life in a different learning environment.</p></div></li>
+      <li><span class="history-marker">04</span><div><h3>Education Company / Engineer</h3><p>Apr 2026 — Present · Working as an engineer.</p></div></li>
+    </ol>
+  </section>
+
+  <section class="shell capability-section" aria-labelledby="capability-title">
+    <div class="section-intro"><p class="eyebrow">Capabilities</p><h2 id="capability-title">What I build</h2><p>From a source dataset to a running service: I work across the layers that make AI systems useful, reliable, and ready to improve over time.</p></div>
+    <div class="capability-grid">{skills.map(([title, copy], index) => <article class="capability"><span>0{index + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+  </section>
+
+  <section class="shell github-section" aria-labelledby="github-title">
+    <div class="section-intro"><p class="eyebrow">Selected GitHub work</p><h2 id="github-title">From ideas to code</h2></div>
+    <div class="github-projects">{projects.map(([title, copy, href]) => <a href={href} target="_blank" rel="noopener noreferrer"><strong>{title}</strong><span>{copy}</span><b>GitHub ↗</b></a>)}</div>
+    <a class="button github-button" href={site.github} target="_blank" rel="me noopener noreferrer">Explore GitHub</a>
+  </section>
+
+  <section class="shell future-section" aria-labelledby="future-title">
+    <p class="eyebrow">Looking ahead</p>
+    <h2 id="future-title">Helping AI reach<br /><span>better services.</span></h2>
+    <p>I want to strengthen the data foundations that allow AI models to address more real-world needs and power better services. My goal is to support the full loop: trustworthy data flows in, models improve, and products deliver value continuously. I want to be the engineer who makes that loop dependable.</p>
+  </section>
+
+  <section class="shell social-section" aria-label="Social profiles">
+    <a class="social-link" href={site.x} target="_blank" rel="me noopener noreferrer" aria-label="X profile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.8L23.2 22H17l-4.9-6.4L6.5 22H3.4l7.3-8.4L3 2h6.3l4.4 5.8L18.9 2Zm-1.1 18h1.7L8.4 3.9H6.6L17.8 20Z" /></svg><span>X</span></a>
+    <a class="social-link" href={site.github} target="_blank" rel="me noopener noreferrer" aria-label="GitHub profile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.5 2.4 1.1 3 .9.1-.6.4-1.1.7-1.3-2.3-.3-4.7-1.1-4.7-5A3.9 3.9 0 0 1 6.7 9c-.1-.3-.5-1.3.1-2.7 0 0 .9-.3 2.8 1A9.8 9.8 0 0 1 12 7c.8 0 1.6.1 2.4.3 1.9-1.3 2.8-1 2.8-1 .6 1.4.2 2.4.1 2.7a3.9 3.9 0 0 1 1 2.7c0 3.9-2.4 4.7-4.7 5 .4.3.7.9.7 1.8V21c0 .3.2.6.7.5A10 10 0 0 0 12 2Z" /></svg><span>GitHub</span></a>
+    <a class="social-link" href={site.linkedin} target="_blank" rel="me noopener noreferrer" aria-label="LinkedIn profile"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.3 3.5a2.1 2.1 0 1 1 0 4.2 2.1 2.1 0 0 1 0-4.2ZM3.5 8.9h3.6V20H3.5V8.9Zm5.9 0h3.4v1.5h.1c.5-.9 1.6-1.9 3.5-1.9 3.7 0 4.4 2.4 4.4 5.6V20h-3.6v-5.1c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V20H9.4V8.9Z" /></svg><span>LinkedIn</span></a>
+  </section>
+</SiteLayout>

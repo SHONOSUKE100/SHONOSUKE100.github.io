@@ -1,0 +1,9 @@
+---
+import { getCollection } from 'astro:content';
+import MemoryMap from '../components/MemoryMap.astro';
+import PageTitle from '../components/PageTitle.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+const entries = (await getCollection('memories', ({ data }) => !data.draft && data.locale === 'en')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const memories = entries.map((entry) => ({ id: entry.id, ...entry.data, date: entry.data.date.toISOString(), href: `/memories/${entry.id}/` }));
+---
+<SiteLayout title="Memory Map — Sho Ikeda"><PageTitle eyebrow="Memories" title="Memory Map" description="Places, photos, and small reflections collected along the journey." /><MemoryMap {memories} /></SiteLayout>

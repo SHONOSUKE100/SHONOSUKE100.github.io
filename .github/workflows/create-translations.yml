@@ -1,0 +1,45 @@
+name: Create translated content
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/content/writings/**/*.md'
+      - 'src/content/memories/**/*.md'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-translations:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-actions[bot]'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Find added Markdown files
+        id: changed
+        run: |
+          files="$(git diff --name-only --diff-filter=A HEAD^ HEAD -- 'src/content/writings/**/*.md' 'src/content/memories/**/*.md')"
+          echo "files<<EOF" >> "$GITHUB_OUTPUT"
+          echo "$files" >> "$GITHUB_OUTPUT"
+          echo "EOF" >> "$GITHUB_OUTPUT"
+      - name: Generate missing translation counterparts
+        if: steps.changed.outputs.files != ''
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/translate-content.mjs ${{ steps.changed.outputs.files }}
+      - name: Create translation pull request
+        if: steps.changed.outputs.files != ''
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'content: add generated translations'
+          branch: automation/content-translations
+          delete-branch: true
+          title: 'content: add generated translations'
+          body: 'Gemini generated the missing language counterparts for newly added Writing or Memory Markdown files. Please review the translations before merging.'

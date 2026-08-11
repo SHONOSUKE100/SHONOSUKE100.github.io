@@ -1,0 +1,11 @@
+---
+interface Props { eyebrow: string; title: string; description?: string; profileImage?: { src: string; alt: string }; }
+const { eyebrow, title, description, profileImage } = Astro.props;
+---
+
+<header class:list={['page-title shell', { 'page-title--with-profile': profileImage }]}>
+  <p class="eyebrow">{eyebrow}</p>
+  <h1>{title}<span>.</span></h1>
+  {description && <p class="lede">{description}</p>}
+  {profileImage && <img class="page-title-profile" src={profileImage.src} alt={profileImage.alt} width="480" height="480" />}
+</header>

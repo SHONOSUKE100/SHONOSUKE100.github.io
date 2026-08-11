@@ -1,0 +1,22 @@
+---
+import { getCollection, render } from 'astro:content';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('writings', ({ data }) => !data.draft && data.locale === 'ja');
+  return posts.map((post) => ({ params: { slug: post.id.replace(/^ja\//, '') }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<SiteLayout locale="ja" title={`${post.data.title} — Sho Ikeda`} description={post.data.description}>
+  <article class="article-content">
+    <p class="eyebrow">{post.data.category.replace('-', ' ')}</p>
+    <h1>{post.data.title}<span>。</span></h1>
+    <p class="lede">{post.data.description}</p>
+    <Content />
+    <p><a href="/ja/writing/">← 記事一覧へ戻る</a></p>
+  </article>
+</SiteLayout>

@@ -1,0 +1,30 @@
+---
+import '../styles/global.css';
+import SiteFooter from '../components/SiteFooter.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  locale?: 'en' | 'ja';
+}
+
+const { title, description = 'Portfolio of Sho Ikeda — software, AI, law, and learning.', locale = 'en' } = Astro.props;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <SiteHeader currentPath={Astro.url.pathname} locale={locale} />
+    <main id="main-content"><slot /></main>
+    <SiteFooter />
+  </body>
+</html>

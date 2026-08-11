@@ -1,0 +1,25 @@
+---
+import { getCollection, render } from 'astro:content';
+import SiteLayout from '../../../layouts/SiteLayout.astro';
+
+export async function getStaticPaths() {
+  const memories = await getCollection('memories', ({ data }) => !data.draft && data.locale === 'ja');
+  return memories.map((memory) => ({ params: { slug: memory.id.replace(/^ja\//, '') }, props: { memory } }));
+}
+
+const { memory } = Astro.props;
+const { Content } = await render(memory);
+const date = new Intl.DateTimeFormat('ja-JP', { dateStyle: 'long' }).format(memory.data.date);
+---
+
+<SiteLayout locale="ja" title={`${memory.data.title} — 思い出の地図 — Sho Ikeda`} description={memory.data.summary}>
+  <article class="article-content">
+    <p class="eyebrow">思い出 · {date}</p>
+    <h1>{memory.data.title}<span>。</span></h1>
+    <p class="lede">{memory.data.summary}</p>
+    <p><strong>{memory.data.locationLabel}</strong></p>
+    {memory.data.images.length > 0 && <div class="gallery"><div class="gallery-track" aria-label={`${memory.data.title} の写真`}>{memory.data.images.map((image) => <figure><img src={image.src} alt={image.alt} /></figure>)}</div></div>}
+    <Content />
+    <p><a href="/ja/memories/">← 思い出の地図へ戻る</a></p>
+  </article>
+</SiteLayout>

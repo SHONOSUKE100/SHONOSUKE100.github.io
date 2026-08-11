@@ -1,11 +1,33 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { getCollection } from 'astro:content';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+const writings = (await getCollection('writings', ({ data }) => !data.draft && data.locale === 'en'))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+  .slice(0, 2);
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<SiteLayout title="Sho Ikeda — Build, Learn, Explore">
+  <section class="hero shell">
+    <div>
+      <p class="eyebrow">Software Engineer / AI Engineer</p>
+      <h1>Explore<br />The<br />World<span>.</span></h1>
+      <p class="lede">I explore technology and travel around the world to understand the world and build better systems.</p>
+      <a class="button" href="/work/">View work</a>
+    </div>
+    <div class="hero-art">
+      <img src="/images/hero-art.jpeg" alt="Sho Ikeda" width="1600" height="1067" fetchpriority="high" />
+    </div>
+  </section>
+  <section class="shell home-grid">
+    <div class="section-block">
+      <h2 class="section-heading">Selected writing</h2>
+      <ul class="work-list">{writings.map((post) => <li><a href={`/writing/${post.id}/`}><strong>{post.data.title}</strong><span>{post.data.description}</span></a><span aria-hidden="true">→</span></li>)}</ul>
+    </div>
+    <div class="section-block">
+      <h2 class="section-heading">Currently exploring</h2>
+      <p class="exploring">Software Design /<br />Data Engineering /<br />Rule Design</p>
+      <a href="/about/">More about me →</a>
+    </div>
+  </section>
+</SiteLayout>

@@ -1,0 +1,9 @@
+---
+import { getCollection } from 'astro:content';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+const writings = (await getCollection('writings', ({ data }) => !data.draft && data.locale === 'ja')).sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()).slice(0, 2);
+---
+<SiteLayout locale="ja" title="Sho Ikeda — つくる、学ぶ、探究する">
+  <section class="hero shell"><div><p class="eyebrow">ソフトウェアエンジニア / AI エンジニア</p><h1>冒険<br />し続ける<span>。</span></h1><p class="lede">テクノロジーを探究し、世界を旅する。世界を理解し、よりよいシステムをつくるために。</p><a class="button" href="/ja/work/">プロジェクトを見る</a></div><div class="hero-art"><img src="/images/hero-art.jpeg" alt="Sho Ikeda" width="1600" height="1067" fetchpriority="high" /></div></section>
+  <section class="shell home-grid"><div class="section-block"><h2 class="section-heading">注目の記事</h2><ul class="work-list">{writings.map((post) => <li><a href={`/ja/writing/${post.id.replace(/^ja\//, '')}/`}><strong>{post.data.title}</strong><span>{post.data.description}</span></a><span aria-hidden="true">→</span></li>)}</ul></div><div class="section-block"><h2 class="section-heading">いま探究していること</h2><p class="exploring">ソフトウェアデザイン /<br />データエンジニアリング /<br />ルールデザイン</p><a href="/ja/about/">プロフィールを見る →</a></div></section>
+</SiteLayout>

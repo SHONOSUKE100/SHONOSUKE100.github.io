@@ -1,0 +1,34 @@
+---
+const { currentPath, locale = 'en' } = Astro.props as { currentPath: string; locale?: 'en' | 'ja' };
+const localPath = locale === 'ja' ? currentPath.replace(/^\/ja/, '') || '/' : currentPath;
+const prefix = locale === 'ja' ? '/ja' : '';
+const labels = locale === 'ja'
+  ? { about: 'プロフィール', work: 'プロジェクト', writing: '記事', memories: '思い出の地図', language: 'EN' }
+  : { about: 'About', work: 'Work', writing: 'Writing', memories: 'Memory Map', language: '日本語' };
+const links = [
+  { href: `${prefix}/about/`, path: '/about/', label: labels.about },
+  { href: `${prefix}/work/`, path: '/work/', label: labels.work },
+  { href: `${prefix}/writing/`, path: '/writing/', label: labels.writing },
+  { href: `${prefix}/memories/`, path: '/memories/', label: labels.memories },
+];
+const alternatePath = locale === 'ja' ? localPath : `/ja${localPath}`;
+---
+
+<header class="site-header">
+  <div class="shell header-inner">
+    <a class="brand" href="/" aria-label="Sho Ikeda — home">
+      <img class="brand-mark" src="/images/profile.png" alt="" width="48" height="48" />
+      <span>SHO IKEDA</span>
+    </a>
+    <nav aria-label="Primary navigation">
+      <ul class="nav-list">
+        {links.map((link) => (
+          <li>
+            <a href={link.href} aria-current={localPath === link.path ? 'page' : undefined}>{link.label}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <div class="header-tools"><a class="language-switch" href={alternatePath} lang={locale === 'ja' ? 'en' : 'ja'}>{labels.language}</a><p class="location">⌖ CHIBA / TOKYO / JAPAN<br /><span>35.6762° N, 139.6503° E</span></p></div>
+  </div>
+</header>

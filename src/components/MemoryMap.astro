@@ -1,0 +1,228 @@
+---
+interface MemoryItem {
+  id: string;
+  title: string;
+  date: string;
+  summary: string;
+  latitude: number;
+  longitude: number;
+  locationLabel: string;
+  images: { src: string; alt: string }[];
+  href: string;
+}
+
+const { memories } = Astro.props as { memories: MemoryItem[] };
+---
+
+<section class="memory-page shell" aria-label="Memory Map">
+  <div id="memory-map" class="map-frame" aria-label="Interactive map of memories" aria-busy="true">
+    <p class="map-loading">Loading map…</p>
+  </div>
+  <section class="memory-fallback" aria-label="Memory list">
+    <h2>All memories</h2>
+    <ul class="memory-fallback-list">
+      {memories.map((memory) => <li><a href={memory.href}><h3>{memory.title}</h3><p>{memory.summary}</p><small>{memory.locationLabel} · {memory.date.slice(0, 10)}</small></a></li>)}
+    </ul>
+  </section>
+</section>
+
+<script id="memory-data" type="application/json" set:html={JSON.stringify(memories)}></script>
+<style is:global>@import 'maplibre-gl/dist/maplibre-gl.css';</style>
+<script>
+  type MemoryItem = {
+    title: string; date: string; summary: string;
+    latitude: number; longitude: number; locationLabel: string; href: string;
+    images: { src: string; alt: string }[];
+  };
+
+  const mapElement = document.querySelector<HTMLElement>('#memory-map');
+  const dataElement = document.querySelector<HTMLScriptElement>('#memory-data');
+  const memories: MemoryItem[] = JSON.parse(dataElement?.textContent ?? '[]');
+
+  function showMapError(message: string) {
+    if (!mapElement) return;
+    mapElement.setAttribute('aria-busy', 'false');
+    mapElement.replaceChildren();
+    const error = document.createElement('p');
+    error.className = 'map-error';
+    error.textContent = message;
+    mapElement.append(error);
+  }
+
+  if (!mapElement) throw new Error('Map container was not found.');
+
+  try {
+    const maplibregl = await import('maplibre-gl');
+    const map = new maplibregl.Map({
+      container: mapElement,
+      // A self-contained raster style avoids style, sprite, and glyph requests
+      // that can leave a vector map blank when an external provider is unavailable.
+      style: {
+        version: 8,
+        sources: {
+          openstreetmap: {
+            type: 'raster',
+            tiles: ['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],
+            tileSize: 256,
+            attribution: '© OpenStreetMap contributors',
+            maxzoom: 19,
+          },
+        },
+        layers: [{ id: 'openstreetmap', type: 'raster', source: 'openstreetmap' }],
+      },
+      center: [139.6503, 35.6762],
+      zoom: 8.4,
+      maxZoom: 19,
+      attributionControl: true,
+    });
+
+    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+    const resizeObserver = new ResizeObserver(() => map.resize());
+    resizeObserver.observe(mapElement);
+    const photoLayer = document.createElement('div');
+    photoLayer.className = 'memory-photo-layer';
+    map.getCanvasContainer().append(photoLayer);
+
+    function popupContent(memory: MemoryItem) {
+      const popup = new maplibregl.Popup({ offset: 20 });
+      const content = document.createElement('div');
+      const title = document.createElement('strong');
+      title.textContent = memory.title;
+      const summary = document.createElement('p');
+      summary.textContent = memory.summary;
+      const link = document.createElement('a');
+      link.href = memory.href;
+      link.textContent = 'Read note →';
+      content.append(title, summary, link);
+      popup.setDOMContent(content);
+      return popup;
+    }
+
+    /* async function createMarkerImage(src: string) {
+      const image = new Image();
+      image.decoding = 'async';
+      image.src = src;
+      await image.decode();
+
+      const scale = 2;
+      const photoSize = 62;
+      const pointerHeight = 10;
+      const canvas = document.createElement('canvas');
+      canvas.width = photoSize * scale;
+      canvas.height = (photoSize + pointerHeight) * scale;
+      const context = canvas.getContext('2d');
+      if (!context) throw new Error('Could not create a map marker image.');
+
+      context.scale(scale, scale);
+      const center = photoSize / 2;
+      context.fillStyle = '#031d27';
+      context.beginPath();
+      context.moveTo(center - 7, photoSize - 4);
+      context.lineTo(center + 7, photoSize - 4);
+      context.lineTo(center, photoSize + pointerHeight);
+      context.closePath();
+      context.fill();
+      context.beginPath();
+      context.arc(center, center, 31, 0, Math.PI * 2);
+      context.fill();
+      context.fillStyle = '#f7f1e5';
+      context.beginPath();
+      context.arc(center, center, 28, 0, Math.PI * 2);
+      context.fill();
+      context.save();
+      context.beginPath();
+      context.arc(center, center, 26, 0, Math.PI * 2);
+      context.clip();
+      const ratio = Math.max(52 / image.naturalWidth, 52 / image.naturalHeight);
+      const width = image.naturalWidth * ratio;
+      const height = image.naturalHeight * ratio;
+      context.drawImage(image, center - width / 2, center - height / 2, width, height);
+      context.restore();
+      return context.getImageData(0, 0, canvas.width, canvas.height);
+    }
+
+    // `load` waits for the raster tiles too. If a tile provider is slow or unavailable,
+    // that event may never arrive and would leave the photo layer undisplayed.
+    // `style.load` is sufficient for adding our independent GeoJSON/photo layer.
+    const addMemoryPhotoLayer = async () => {
+      const markerSources = await Promise.all(memories.map(async (memory, index) => {
+        const imageId = `memory-photo-${index}`;
+        const src = memory.images[0]?.src ?? '/images/hero-art.jpeg';
+        try {
+          map.addImage(imageId, await createMarkerImage(src), { pixelRatio: 2 });
+        } catch (error) {
+          console.warn(`Could not load photo for ${memory.title}; using fallback image.`, error);
+          map.addImage(imageId, await createMarkerImage('/images/hero-art.jpeg'), { pixelRatio: 2 });
+        }
+        return {
+          type: 'Feature' as const,
+          properties: { imageId, memoryIndex: index },
+          geometry: { type: 'Point' as const, coordinates: [memory.longitude, memory.latitude] },
+        };
+      }));
+
+      map.addSource('memory-photos', {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: markerSources },
+      });
+      map.addLayer({
+        id: 'memory-photos',
+        type: 'symbol',
+        source: 'memory-photos',
+        layout: {
+          'icon-image': ['get', 'imageId'],
+          'icon-anchor': 'bottom',
+          'icon-allow-overlap': true,
+          'icon-ignore-placement': true,
+        },
+      });
+      map.on('click', 'memory-photos', (event) => {
+        const index = Number(event.features?.[0]?.properties?.memoryIndex);
+        const memory = memories[index];
+        if (memory) popupContent(memory).setLngLat([memory.longitude, memory.latitude]).addTo(map);
+      });
+      map.on('mouseenter', 'memory-photos', () => { map.getCanvas().style.cursor = 'pointer'; });
+      map.on('mouseleave', 'memory-photos', () => { map.getCanvas().style.cursor = ''; });
+      map.resize();
+      mapElement.setAttribute('aria-busy', 'false');
+    };
+    if (map.isStyleLoaded()) void addMemoryPhotoLayer();
+    else map.once('style.load', () => { void addMemoryPhotoLayer(); }); */
+    const photoMarkers = memories.map((memory) => {
+      const marker = document.createElement('button');
+      marker.className = 'photo-marker';
+      marker.type = 'button';
+      marker.setAttribute('aria-label', `Open ${memory.title}`);
+      const thumbnail = document.createElement('img');
+      thumbnail.src = memory.images[0]?.src ?? '/images/hero-art.jpeg';
+      thumbnail.alt = '';
+      marker.append(thumbnail);
+      marker.addEventListener('click', () => {
+        popupContent(memory).setLngLat([memory.longitude, memory.latitude]).addTo(map);
+      });
+      photoLayer.append(marker);
+      return { memory, marker };
+    });
+    const positionPhotoMarkers = () => {
+      photoMarkers.forEach(({ memory, marker }) => {
+        const point = map.project([memory.longitude, memory.latitude]);
+        marker.style.left = `${point.x}px`;
+        marker.style.top = `${point.y}px`;
+      });
+    };
+    positionPhotoMarkers();
+    requestAnimationFrame(positionPhotoMarkers);
+    map.on('render', positionPhotoMarkers);
+    map.on('moveend', positionPhotoMarkers);
+    mapElement.querySelector('.map-loading')?.remove();
+    mapElement.setAttribute('aria-busy', 'false');
+    map.once('remove', () => resizeObserver.disconnect());
+    map.on('error', (event) => {
+      console.error('MapLibre error:', event.error);
+      if (!map.isStyleLoaded()) showMapError('The map tiles could not be loaded. Please check your connection and try again.');
+    });
+  } catch (error) {
+    console.error('Unable to load MapLibre.', error);
+    showMapError('The interactive map could not be loaded. Please try again later.');
+  }
+</script>
