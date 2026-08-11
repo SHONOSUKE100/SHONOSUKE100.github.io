@@ -71,7 +71,7 @@ const { memories } = Astro.props as { memories: MemoryItem[] };
         layers: [{ id: 'openstreetmap', type: 'raster', source: 'openstreetmap' }],
       },
       center: [139.6503, 35.6762],
-      zoom: 8.4,
+      zoom: 3.2,
       maxZoom: 19,
       attributionControl: true,
     });
@@ -196,9 +196,12 @@ const { memories } = Astro.props as { memories: MemoryItem[] };
       const thumbnail = document.createElement('img');
       thumbnail.src = memory.images[0]?.src ?? '/images/hero-art.jpeg';
       thumbnail.alt = '';
-      marker.append(thumbnail);
+      const label = document.createElement('span');
+      label.className = 'photo-marker-label';
+      label.textContent = memory.title;
+      marker.append(thumbnail, label);
       marker.addEventListener('click', () => {
-        popupContent(memory).setLngLat([memory.longitude, memory.latitude]).addTo(map);
+        window.location.assign(memory.href);
       });
       photoLayer.append(marker);
       return { memory, marker };
@@ -212,6 +215,11 @@ const { memories } = Astro.props as { memories: MemoryItem[] };
     };
     positionPhotoMarkers();
     requestAnimationFrame(positionPhotoMarkers);
+    if (memories.length > 1) {
+      const bounds = new maplibregl.LngLatBounds();
+      memories.forEach((memory) => bounds.extend([memory.longitude, memory.latitude]));
+      map.fitBounds(bounds, { padding: 96, maxZoom: 4.5, duration: 0 });
+    }
     map.on('render', positionPhotoMarkers);
     map.on('moveend', positionPhotoMarkers);
     mapElement.querySelector('.map-loading')?.remove();
