@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
-  <title id="title">Notebook and coffee on a cafe table</title><desc id="desc">A stylized open notebook and a coffee cup on a wood table.</desc>
-  <rect width="800" height="500" fill="#d5b37a"/><path d="M0 85h800M0 190h800M0 305h800M0 420h800" stroke="#b38552" stroke-width="14"/>
-  <path d="M185 145q130-45 220 25v225q-110-68-220-12z" fill="#f8f2e8" stroke="#173640" stroke-width="7"/><path d="M405 170q95-70 220-25v238q-110-56-220 12z" fill="#f5e9d2" stroke="#173640" stroke-width="7"/>
-  <path d="M230 205h130m-130 36h130m-130 36h120m105-65h125m-125 37h125m-125 37h112" stroke="#4d7690" stroke-width="7"/>
-  <circle cx="645" cy="290" r="71" fill="#f6e6c3" stroke="#173640" stroke-width="8"/><circle cx="645" cy="290" r="50" fill="#65422a"/><path d="M700 280q65 5 35 55" fill="none" stroke="#f6e6c3" stroke-width="16"/>
-  <path d="M95 100l75 55" stroke="#ffad09" stroke-width="14"/><path d="M100 100l32 75" stroke="#0c7db6" stroke-width="14"/>
-</svg>

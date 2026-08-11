@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-labelledby="title desc">
-  <title id="title">Rainy coastal view from a cafe window</title><desc id="desc">A stylized window looking over a rainy sea and lighthouse.</desc>
-  <rect width="800" height="500" fill="#102d38"/><rect x="70" y="55" width="660" height="330" fill="#a8d5df" stroke="#f7eedf" stroke-width="20"/>
-  <path d="M80 270 Q190 220 300 270 T520 260 T720 275 V375 H80Z" fill="#447f98"/><path d="M80 306 Q190 275 300 310 T520 300 T720 314 V375 H80Z" fill="#275a75"/>
-  <path d="M625 115h24v145h-24zM605 260h64l-12 50h-40z" fill="#f6e6c3"/><path d="M70 55h660M400 55v330" stroke="#f7eedf" stroke-width="18"/>
-  <path d="M125 110l35 78m52-95l38 105m87-80l23 71m159-85l30 97m83-83l39 83" stroke="#e6f6f4" stroke-width="8" opacity=".75"/>
-  <rect y="385" width="800" height="115" fill="#5e3e29"/><ellipse cx="565" cy="424" rx="80" ry="20" fill="#d6ad61"/><path d="M540 395h50v34h-50z" fill="#f8f2e8"/><path d="M590 401q36 0 20 24" fill="none" stroke="#f8f2e8" stroke-width="8"/>
-</svg>
