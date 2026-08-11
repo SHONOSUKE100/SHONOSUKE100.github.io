@@ -10,6 +10,13 @@ const skills = [
   ['Cloud operations', 'Package and operate services with Docker, AWS Lambda, CloudWatch, and CloudFormation so an experiment can become a maintainable product.'],
 ];
 
+const techStack = [
+  ['Languages', 'Python · TypeScript · Dart · Java'],
+  ['Frameworks / Tools', 'Django · React · Flutter · Spring Boot'],
+  ['ML / Data', 'PyTorch · Polars · Darts'],
+  ['DevOps', 'Docker · AWS · Supabase · Firebase'],
+];
+
 const projects = [
   ['CaseCompass', 'A legal precedent search application', 'https://github.com/SHONOSUKE100/CaseCompass'],
   ['Bar Exam with BERT', 'Bar-exam PDF structuring and BERT fine-tuning', 'https://github.com/SHONOSUKE100/Bar_exam_with_BERT'],
@@ -38,6 +45,11 @@ const projects = [
   <section class="shell capability-section" aria-labelledby="capability-title">
     <div class="section-intro"><p class="eyebrow">Capabilities</p><h2 id="capability-title">What I build</h2><p>From a source dataset to a running service: I work across the layers that make AI systems useful, reliable, and ready to improve over time.</p></div>
     <div class="capability-grid">{skills.map(([title, copy], index) => <article class="capability"><span>0{index + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+  </section>
+
+  <section class="shell tech-stack-section" aria-labelledby="tech-stack-title">
+    <div class="section-intro"><p class="eyebrow">Tech stack</p><h2 id="tech-stack-title">Tools I use</h2></div>
+    <div class="tech-stack-grid">{techStack.map(([title, items]) => <article><h3>{title}</h3><p>{items}</p></article>)}</div>
   </section>
 
   <section class="shell github-section" aria-labelledby="github-title">
