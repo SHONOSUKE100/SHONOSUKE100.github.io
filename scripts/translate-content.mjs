@@ -25,7 +25,7 @@ async function translate(source, target, targetLocale) {
 Return only a complete Markdown document. Preserve the YAML frontmatter structure, dates, URLs, image paths, numeric coordinates, categories, tags, and draft value exactly. Set the frontmatter locale value to "${targetLocale}". Translate title, description, summary, locationLabel, image alt text, and body prose. Do not add commentary or Markdown code fences.
 
 SOURCE:\n${source}`;
-  const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent', {
+  const response = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent', {
     method: 'POST',
     headers: { 'content-type': 'application/json', 'x-goog-api-key': apiKey },
     body: JSON.stringify({

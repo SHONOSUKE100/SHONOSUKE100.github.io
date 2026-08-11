@@ -11,6 +11,8 @@ npm run build
 npm run preview
 ```
 
+GitHub Actions は Node.js 24 を使用します。
+
 - `npm run dev` — ローカル開発サーバーを起動
 - `npm run build` — `dist/` に静的サイトを出力
 - `npm run preview` — ビルド済みサイトをローカルで確認
