@@ -124,6 +124,12 @@ GEMINI_API_KEY="..." npm run translate:content -- src/content/writings/new-note.
 
 Memory Map は MapLibre と OpenStreetMap のラスタタイルを使用します。ベースマップの表示にはネットワーク接続が必要です。一方、写真マーカーはサイト内の画像を用い、緯度・経度から表示位置を計算します。
 
+## GitHub Pages への公開
+
+`.github/workflows/deploy-pages.yml` により、`main` への push ごとにサイトをビルドして GitHub Pages へ公開します。リポジトリ作成後に GitHub の **Settings → Pages → Source** で **GitHub Actions** を選択してください。
+
+このリポジトリ名を `SHONOSUKE100.github.io` として作成する場合、公開 URL は `https://shonosuke100.github.io` です。別のリポジトリ名で公開する場合は、`astro.config.mjs` の `base` 設定も必要になります。
+
 ## 公開前チェック
 
 変更後は次を実行してください。
