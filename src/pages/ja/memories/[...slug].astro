@@ -10,6 +10,7 @@ export async function getStaticPaths() {
 const { memory } = Astro.props;
 const { Content } = await render(memory);
 const date = new Intl.DateTimeFormat('ja-JP', { dateStyle: 'long' }).format(memory.data.date);
+const galleryId = `gallery-${memory.id.replace(/[^a-z0-9]/gi, '-')}`;
 ---
 
 <SiteLayout locale="ja" title={`${memory.data.title} — 思い出の地図 — Sho Ikeda`} description={memory.data.summary}>
@@ -18,8 +19,38 @@ const date = new Intl.DateTimeFormat('ja-JP', { dateStyle: 'long' }).format(memo
     <h1>{memory.data.title}<span>。</span></h1>
     <p class="lede">{memory.data.summary}</p>
     <p><strong>{memory.data.locationLabel}</strong></p>
-    {memory.data.images.length > 0 && <div class="gallery"><div class="gallery-track" aria-label={`${memory.data.title} の写真`}>{memory.data.images.map((image) => <figure><img src={image.src} alt={image.alt} /></figure>)}</div></div>}
+    {memory.data.images.length > 0 && <section class="gallery" data-gallery>
+      <div class="gallery-heading"><h2>写真</h2>{memory.data.images.length > 1 && <p>スワイプ・横スクロール、またはボタンで全ての写真を見られます。</p>}</div>
+      <div id={galleryId} class="gallery-track" aria-label={`${memory.data.title} の写真`}>{memory.data.images.map((image) => <figure><img src={image.src} alt={image.alt} /></figure>)}</div>
+      {memory.data.images.length > 1 && <div class="gallery-controls" aria-label="写真ギャラリーの操作">
+        <button type="button" data-gallery-previous aria-controls={galleryId}>← <span>前へ</span></button>
+        <p aria-live="polite"><span data-gallery-current>1</span> / {memory.data.images.length}</p>
+        <button type="button" data-gallery-next aria-controls={galleryId}><span>次へ</span> →</button>
+      </div>}
+    </section>}
     <Content />
     <p><a href="/ja/memories/">← 思い出の地図へ戻る</a></p>
   </article>
 </SiteLayout>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+    const track = gallery.querySelector<HTMLElement>('.gallery-track');
+    const slides = Array.from(gallery.querySelectorAll('figure'));
+    const previous = gallery.querySelector<HTMLButtonElement>('[data-gallery-previous]');
+    const next = gallery.querySelector<HTMLButtonElement>('[data-gallery-next]');
+    const current = gallery.querySelector<HTMLElement>('[data-gallery-current]');
+    if (!track || slides.length < 2 || !previous || !next || !current) return;
+
+    const updateControls = () => {
+      const index = Math.min(slides.length - 1, Math.max(0, Math.round(track.scrollLeft / track.clientWidth)));
+      current.textContent = String(index + 1);
+      previous.disabled = index === 0;
+      next.disabled = index === slides.length - 1;
+    };
+    previous.addEventListener('click', () => track.scrollBy({ left: -track.clientWidth, behavior: 'smooth' }));
+    next.addEventListener('click', () => track.scrollBy({ left: track.clientWidth, behavior: 'smooth' }));
+    track.addEventListener('scroll', updateControls, { passive: true });
+    updateControls();
+  });
+</script>
