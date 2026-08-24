@@ -68,9 +68,9 @@ function cardMarkup({ title, label, locale }, offset = 0) {
   return `<g transform="translate(0 ${offset})">
     <rect width="1200" height="630" fill="#f8f2e8"/>
     <rect x="865" width="335" height="630" fill="#031d27"/>
-    <text x="76" y="104" fill="#b76800" font-family="Noto Sans JP" font-size="27" font-weight="700" letter-spacing="2">■  ${escapeXml(label)}</text>
-    <text x="76" y="220" fill="#08232d" font-family="Noto Sans JP" font-size="${titleSize}" font-weight="700">${text}</text>
-    <text x="76" y="558" fill="#08232d" font-family="Noto Sans JP" font-size="25" font-weight="700" letter-spacing="3">SHO IKEDA</text>
+    <text x="76" y="104" fill="#b76800" font-family="Noto Sans CJK JP" font-size="27" font-weight="700" letter-spacing="2">■  ${escapeXml(label)}</text>
+    <text x="76" y="220" fill="#08232d" font-family="Noto Sans CJK JP" font-size="${titleSize}" font-weight="700">${text}</text>
+    <text x="76" y="558" fill="#08232d" font-family="Noto Sans CJK JP" font-size="25" font-weight="700" letter-spacing="3">SHO IKEDA</text>
     <image href="${profile}" x="898" y="220" width="270" height="405" preserveAspectRatio="xMidYMax meet"/>
   </g>`;
 }
