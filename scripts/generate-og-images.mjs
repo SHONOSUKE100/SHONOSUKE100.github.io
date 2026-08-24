@@ -5,7 +5,8 @@ import sharp from 'sharp';
 
 const root = process.cwd();
 const publicDirectory = resolve(root, 'public');
-const outputDirectory = resolve(publicDirectory, 'og');
+const ogVersion = process.env.GITHUB_SHA?.slice(0, 12) ?? 'local';
+const outputDirectory = resolve(publicDirectory, 'og', ogVersion);
 const font = await readFile(resolve(root, 'src/assets/fonts/NotoSansCJKjp-Regular.otf'));
 const profile = `data:image/png;base64,${(await readFile(resolve(publicDirectory, 'images/profile.png'))).toString('base64')}`;
 

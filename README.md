@@ -108,6 +108,8 @@ The longer memory text goes here.
 
 `npm run build` の前に、各ページ・Writing・Memory 用の `1200 × 630` の OGP 画像を自動生成します。共有した URL の言語に合わせたタイトル・種別・プロフィール画像が表示されます。
 
+生成画像はデプロイごとの commit SHA を含む URL に出力されるため、同一の共有 URL でも古い OGP 画像が CDN に残らないようにしています。
+
 日本語カードの生成には、SIL Open Font License 1.1 の Noto CJK JP フォントを `src/assets/fonts/` に同梱しています。
 
 Writing / Memory で個別の画像を使いたい場合は、frontmatter に `ogImage` を指定してください。指定がない場合は自動生成カードを使用します。画像は `public/` 配下に置き、`/images/...` 形式で指定します。

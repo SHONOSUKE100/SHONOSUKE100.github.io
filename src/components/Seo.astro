@@ -36,9 +36,7 @@ const xHandle = new URL(site.x).pathname.replace('/', '');
 const generatedImage = image.startsWith('/og/');
 const imageType = image.endsWith('.jpg') || image.endsWith('.jpeg') ? 'image/jpeg' : image.endsWith('.webp') ? 'image/webp' : 'image/png';
 const defaultHref = locale === 'en' ? Astro.url.pathname : alternates.find((alternate) => alternate.locale === 'en')?.href;
-const imageUrl = new URL(image, Astro.site);
-if (generatedImage) imageUrl.searchParams.set('v', process.env.GITHUB_SHA?.slice(0, 12) ?? 'local');
-const absoluteImage = imageUrl.toString();
+const absoluteImage = absolute(image);
 ---
 
 <link rel="canonical" href={url} />
