@@ -6,7 +6,7 @@ import sharp from 'sharp';
 const root = process.cwd();
 const publicDirectory = resolve(root, 'public');
 const outputDirectory = resolve(publicDirectory, 'og');
-const font = await readFile(resolve(root, 'node_modules/@fontsource/noto-sans-jp/files/noto-sans-jp-japanese-400-normal.woff'));
+const font = await readFile(resolve(root, 'src/assets/fonts/NotoSansCJKjp-Regular.otf'));
 const profile = `data:image/png;base64,${(await readFile(resolve(publicDirectory, 'images/profile.png'))).toString('base64')}`;
 
 async function filesIn(directory) {
