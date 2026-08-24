@@ -62,13 +62,14 @@ Article body in Markdown.
 More content here.
 ```
 
-利用できる `category` は次の 5 つです。
+利用できる `category` は次の 6 つです。
 
 - `software-design`
 - `ai-engineering`
 - `law-technology`
 - `learning-data`
 - `engineering-systems`
+- `design`
 
 `tags` は 1〜3 個、`draft: true` の記事は公開一覧から除外されます。記事は `/writing/<ファイル名>/` に生成されます。
 
@@ -94,6 +95,7 @@ elevationMeters: 8 # 任意
 images:
   - src: "/images/memories/yokohama-walk.jpg"
     alt: "A descriptive alt text for the photo"
+ogImage: "/images/memories/yokohama-walk-og.jpg" # 任意
 draft: false
 ---
 
@@ -101,6 +103,12 @@ The longer memory text goes here.
 ```
 
 利用できる `categories` は `nature`、`study`、`travel`、`reflection` です。複数指定できます。`images` の先頭の画像が地図マーカーに使われ、残りは詳細ページのギャラリーに使えます。画像がない場合はサイトの既定画像がマーカーに表示されます。
+
+## OGP（共有カード）
+
+`npm run build` の前に、各ページ・Writing・Memory 用の `1200 × 630` の OGP 画像を自動生成します。共有した URL の言語に合わせたタイトル・種別・プロフィール画像が表示されます。
+
+Writing / Memory で個別の画像を使いたい場合は、frontmatter に `ogImage` を指定してください。指定がない場合は自動生成カードを使用します。画像は `public/` 配下に置き、`/images/...` 形式で指定します。
 
 ## 日本語版と翻訳
 

@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { contentOgImage } from '../../../config/seo';
 
 export async function getStaticPaths() {
   const posts = await getCollection('writings', ({ data }) => !data.draft && data.locale === 'ja');
@@ -9,9 +10,10 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+const englishPost = (await getCollection('writings')).find((entry) => entry.id === post.id.replace(/^ja\//, '') && !entry.data.draft);
 ---
 
-<SiteLayout locale="ja" title={`${post.data.title} — Sho Ikeda`} description={post.data.description}>
+<SiteLayout locale="ja" title={`${post.data.title} — Sho Ikeda`} description={post.data.description} ogType="article" ogImage={post.data.ogImage ?? contentOgImage('writing', post.id, 'ja')} ogImageAlt={post.data.title} publishedTime={post.data.publishedAt} modifiedTime={post.data.updatedAt} alternates={englishPost ? [{ href: `/writing/${post.id.replace(/^ja\//, '')}/`, locale: 'en' }] : []}>
   <article class="article-content">
     <p class="eyebrow">{post.data.category.replace('-', ' ')}</p>
     <h1>{post.data.title}<span>。</span></h1>

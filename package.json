@@ -7,6 +7,8 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "generate:og": "node scripts/generate-og-images.mjs",
+    "prebuild": "npm run generate:og",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
@@ -16,5 +18,10 @@
   "dependencies": {
     "astro": "^7.2.0",
     "maplibre-gl": "^6.2.0"
+  },
+  "devDependencies": {
+    "@fontsource/noto-sans-jp": "^5.3.0",
+    "@resvg/resvg-js": "^2.6.2",
+    "sharp": "^0.34.5"
   }
 }

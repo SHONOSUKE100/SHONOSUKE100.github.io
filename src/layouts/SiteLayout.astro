@@ -2,14 +2,51 @@
 import '../styles/global.css';
 import SiteFooter from '../components/SiteFooter.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import Seo from '../components/Seo.astro';
+import { staticOgImage } from '../config/seo';
 
 interface Props {
   title: string;
   description?: string;
   locale?: 'en' | 'ja';
+  ogImage?: string;
+  ogImageAlt?: string;
+  ogType?: 'website' | 'article';
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  alternates?: { href: string; locale: 'en' | 'ja' }[];
 }
 
-const { title, description = 'Portfolio of Sho Ikeda — software, AI, law, and learning.', locale = 'en' } = Astro.props;
+const {
+  title,
+  description = 'Portfolio of Sho Ikeda — software, AI, law, and learning.',
+  locale = 'en',
+  ogImage,
+  ogImageAlt,
+  ogType = 'website',
+  publishedTime,
+  modifiedTime,
+  alternates = [],
+} = Astro.props;
+
+const pageByPath: Record<string, 'home' | 'about' | 'work' | 'writing' | 'memories' | 'not-found'> = {
+  '/': 'home',
+  '/about/': 'about',
+  '/work/': 'work',
+  '/writing/': 'writing',
+  '/memories/': 'memories',
+  '/404.html': 'not-found',
+  '/ja/': 'home',
+  '/ja/about/': 'about',
+  '/ja/work/': 'work',
+  '/ja/writing/': 'writing',
+  '/ja/memories/': 'memories',
+};
+const staticPage = pageByPath[Astro.url.pathname];
+const defaultAlternates = staticPage && staticPage !== 'not-found'
+  ? [{ href: locale === 'en' ? (Astro.url.pathname === '/' ? '/ja/' : `/ja${Astro.url.pathname}`) : (Astro.url.pathname === '/ja/' ? '/' : Astro.url.pathname.replace(/^\/ja/, '')), locale: locale === 'en' ? 'ja' as const : 'en' as const }]
+  : [];
+const resolvedOgImage = ogImage ?? staticOgImage(staticPage ?? 'home', locale);
 ---
 
 <!doctype html>
@@ -18,6 +55,7 @@ const { title, description = 'Portfolio of Sho Ikeda — software, AI, law, and 
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <Seo title={title} description={description} image={resolvedOgImage} imageAlt={ogImageAlt} type={ogType} locale={locale} publishedTime={publishedTime} modifiedTime={modifiedTime} alternates={[...defaultAlternates, ...alternates]} />
     <link rel="icon" type="image/png" href="/images/profile.png" />
     <link rel="apple-touch-icon" href="/images/profile.png" />
     <title>{title}</title>

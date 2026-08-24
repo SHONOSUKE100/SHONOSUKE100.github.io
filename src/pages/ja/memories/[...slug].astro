@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import SiteLayout from '../../../layouts/SiteLayout.astro';
+import { contentOgImage } from '../../../config/seo';
 
 export async function getStaticPaths() {
   const memories = await getCollection('memories', ({ data }) => !data.draft && data.locale === 'ja');
@@ -11,9 +12,10 @@ const { memory } = Astro.props;
 const { Content } = await render(memory);
 const date = new Intl.DateTimeFormat('ja-JP', { dateStyle: 'long' }).format(memory.data.date);
 const galleryId = `gallery-${memory.id.replace(/[^a-z0-9]/gi, '-')}`;
+const englishMemory = (await getCollection('memories')).find((entry) => entry.id === memory.id.replace(/^ja\//, '') && !entry.data.draft);
 ---
 
-<SiteLayout locale="ja" title={`${memory.data.title} — 思い出の地図 — Sho Ikeda`} description={memory.data.summary}>
+<SiteLayout locale="ja" title={`${memory.data.title} — 思い出の地図 — Sho Ikeda`} description={memory.data.summary} ogType="article" ogImage={memory.data.ogImage ?? contentOgImage('memory', memory.id, 'ja')} ogImageAlt={memory.data.title} publishedTime={memory.data.date} alternates={englishMemory ? [{ href: `/memories/${memory.id.replace(/^ja\//, '')}/`, locale: 'en' }] : []}>
   <article class="article-content">
     <p class="eyebrow">思い出 · {date}</p>
     <h1>{memory.data.title}<span>。</span></h1>

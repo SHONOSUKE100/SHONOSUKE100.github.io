@@ -30,6 +30,7 @@ const memories = defineCollection({
     locationLabel: z.string(),
     elevationMeters: z.number().nonnegative().optional(),
     images: z.array(z.object({ src: z.string(), alt: z.string() })).default([]),
+    ogImage: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });
