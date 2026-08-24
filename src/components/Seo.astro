@@ -36,6 +36,9 @@ const xHandle = new URL(site.x).pathname.replace('/', '');
 const generatedImage = image.startsWith('/og/');
 const imageType = image.endsWith('.jpg') || image.endsWith('.jpeg') ? 'image/jpeg' : image.endsWith('.webp') ? 'image/webp' : 'image/png';
 const defaultHref = locale === 'en' ? Astro.url.pathname : alternates.find((alternate) => alternate.locale === 'en')?.href;
+const imageUrl = new URL(image, Astro.site);
+if (generatedImage) imageUrl.searchParams.set('v', process.env.GITHUB_SHA?.slice(0, 12) ?? 'local');
+const absoluteImage = imageUrl.toString();
 ---
 
 <link rel="canonical" href={url} />
@@ -49,8 +52,8 @@ const defaultHref = locale === 'en' ? Astro.url.pathname : alternates.find((alte
 <meta property="og:url" content={url} />
 <meta property="og:locale" content={localeCode} />
 {alternates.map((alternate) => <meta property="og:locale:alternate" content={alternate.locale === 'ja' ? 'ja_JP' : 'en_US'} />)}
-<meta property="og:image" content={absolute(image)} />
-<meta property="og:image:secure_url" content={absolute(image)} />
+<meta property="og:image" content={absoluteImage} />
+<meta property="og:image:secure_url" content={absoluteImage} />
 <meta property="og:image:type" content={imageType} />
 {generatedImage && <meta property="og:image:width" content="1200" />}
 {generatedImage && <meta property="og:image:height" content="630" />}
@@ -63,5 +66,5 @@ const defaultHref = locale === 'en' ? Astro.url.pathname : alternates.find((alte
 <meta name="twitter:creator" content={`@${xHandle}`} />
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
-<meta name="twitter:image" content={absolute(image)} />
+<meta name="twitter:image" content={absoluteImage} />
 <meta name="twitter:image:alt" content={imageAlt} />
