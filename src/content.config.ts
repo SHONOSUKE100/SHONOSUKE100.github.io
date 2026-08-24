@@ -10,7 +10,7 @@ const writings = defineCollection({
     description: z.string(),
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
-    category: z.enum(['software-design', 'ai-engineering', 'law-technology', 'learning-data', 'engineering-systems']),
+    category: z.enum(['software-design', 'ai-engineering', 'law-technology', 'learning-data', 'engineering-systems', 'design']),
     tags: z.array(z.string()).min(1).max(3),
     draft: z.boolean().default(false),
     ogImage: z.string().optional(),

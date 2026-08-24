@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">道具に使われる三つの状態</title>
+  <desc id="desc">目的、選択肢、主導権の三つを失うことで、道具との関係を自分で選べなくなることを示す図。</desc>
+  <defs>
+    <filter id="raised" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="-12" dy="-12" stdDeviation="14" flood-color="#FFFFFF" flood-opacity="0.95"/>
+      <feDropShadow dx="12" dy="12" stdDeviation="14" flood-color="#B8C2CD" flood-opacity="0.72"/>
+    </filter>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="-6" dy="-6" stdDeviation="8" flood-color="#FFFFFF" flood-opacity="0.85"/>
+      <feDropShadow dx="6" dy="6" stdDeviation="8" flood-color="#BEC7D1" flood-opacity="0.62"/>
+    </filter>
+    <linearGradient id="recess" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#DCE3E9"/>
+      <stop offset="0.5" stop-color="#E9EEF3"/>
+      <stop offset="1" stop-color="#F7F9FB"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="#E9EEF3"/>
+
+  <text x="800" y="84" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="42" font-weight="700" fill="#26323D">道具に使われる三つの状態</text>
+  <text x="800" y="126" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="22" font-weight="500" fill="#687681">依存ではなく、道具との関係を選べなくなることが問題になる</text>
+
+  <g transform="translate(100 184)">
+    <rect width="400" height="480" rx="34" fill="url(#recess)" stroke="#D1D9E0" stroke-width="3"/>
+    <text x="46" y="62" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="18" font-weight="700" letter-spacing="3" fill="#D47B6D">01 / PURPOSE</text>
+    <circle cx="200" cy="171" r="74" fill="#E9EEF3" filter="url(#raised)"/>
+    <circle cx="200" cy="171" r="43" fill="none" stroke="#D47B6D" stroke-width="9"/>
+    <circle cx="200" cy="171" r="17" fill="none" stroke="#D47B6D" stroke-width="9"/>
+    <path d="M255 116 L181 190" fill="none" stroke="#26323D" stroke-width="11" stroke-linecap="round"/>
+    <path d="M255 116 L251 145 M255 116 L226 120" fill="none" stroke="#26323D" stroke-width="11" stroke-linecap="round"/>
+    <text x="200" y="292" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="32" font-weight="700" fill="#26323D">目的を失う</text>
+    <text x="200" y="342" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="21" font-weight="500" fill="#5E6A75">道具を使い続けること自体が</text>
+    <text x="200" y="376" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="21" font-weight="500" fill="#5E6A75">目的になってしまう</text>
+    <rect x="72" y="417" width="256" height="4" rx="2" fill="#D47B6D" opacity="0.55"/>
+  </g>
+
+  <g transform="translate(600 184)">
+    <rect width="400" height="480" rx="34" fill="url(#recess)" stroke="#D1D9E0" stroke-width="3"/>
+    <text x="46" y="62" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="18" font-weight="700" letter-spacing="3" fill="#5E7ED6">02 / CHOICE</text>
+    <circle cx="200" cy="171" r="74" fill="#E9EEF3" filter="url(#raised)"/>
+    <path d="M200 218 V170 M200 170 L152 122 M200 170 L248 122" fill="none" stroke="#5E7ED6" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M152 122 L178 126 M152 122 L156 148" fill="none" stroke="#5E7ED6" stroke-width="11" stroke-linecap="round"/>
+    <path d="M248 122 L222 126 M248 122 L244 148" fill="none" stroke="#B8C2CD" stroke-width="11" stroke-linecap="round"/>
+    <rect x="227" y="104" width="42" height="42" rx="10" fill="#E9EEF3" stroke="#D47B6D" stroke-width="7"/>
+    <path d="M237 125 H259" stroke="#D47B6D" stroke-width="7" stroke-linecap="round"/>
+    <text x="200" y="292" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="32" font-weight="700" fill="#26323D">選択肢を失う</text>
+    <text x="200" y="342" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="21" font-weight="500" fill="#5E6A75">ほかの方法へ移れず</text>
+    <text x="200" y="376" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="21" font-weight="500" fill="#5E6A75">一つの道具が必須になる</text>
+    <rect x="72" y="417" width="256" height="4" rx="2" fill="#5E7ED6" opacity="0.55"/>
+  </g>
+
+  <g transform="translate(1100 184)">
+    <rect width="400" height="480" rx="34" fill="url(#recess)" stroke="#D1D9E0" stroke-width="3"/>
+    <text x="46" y="62" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="18" font-weight="700" letter-spacing="3" fill="#65977E">03 / AGENCY</text>
+    <circle cx="200" cy="171" r="74" fill="#E9EEF3" filter="url(#raised)"/>
+    <circle cx="200" cy="171" r="45" fill="none" stroke="#65977E" stroke-width="10"/>
+    <circle cx="200" cy="171" r="12" fill="#65977E"/>
+    <path d="M200 171 L226 140" stroke="#26323D" stroke-width="10" stroke-linecap="round"/>
+    <path d="M200 104 V119 M200 223 V238 M133 171 H148 M252 171 H267" stroke="#65977E" stroke-width="8" stroke-linecap="round"/>
+    <text x="200" y="292" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="32" font-weight="700" fill="#26323D">主導権を失う</text>
+    <text x="200" y="342" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="21" font-weight="500" fill="#5E6A75">通知・推薦・手順によって</text>
+    <text x="200" y="376" text-anchor="middle" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="21" font-weight="500" fill="#5E6A75">行動が自動的に決まる</text>
+    <rect x="72" y="417" width="256" height="4" rx="2" fill="#65977E" opacity="0.55"/>
+  </g>
+
+  <g transform="translate(305 718)">
+    <rect width="990" height="106" rx="53" fill="#E9EEF3" filter="url(#soft)"/>
+    <circle cx="76" cy="53" r="28" fill="#26323D"/>
+    <circle cx="76" cy="43" r="10" fill="#E9EEF3"/>
+    <path d="M57 72 Q76 55 95 72" fill="none" stroke="#E9EEF3" stroke-width="8" stroke-linecap="round"/>
+    <text x="136" y="66" font-family="Noto Sans CJK JP, Noto Sans JP, sans-serif" font-size="28" font-weight="700" fill="#26323D">共通する結果：道具との関係を、自分で選べなくなる</text>
+  </g>
+</svg>
