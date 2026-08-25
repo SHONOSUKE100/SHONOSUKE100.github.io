@@ -7,7 +7,7 @@ const root = process.cwd();
 const publicDirectory = resolve(root, 'public');
 const ogVersion = process.env.GITHUB_SHA?.slice(0, 12) ?? 'local';
 const outputDirectory = resolve(publicDirectory, 'og', ogVersion);
-const font = await readFile(resolve(root, 'src/assets/fonts/NotoSansCJKjp-Regular.otf'));
+const fontPath = resolve(root, 'src/assets/fonts/NotoSansCJKjp-Regular.otf');
 const profile = `data:image/png;base64,${(await readFile(resolve(publicDirectory, 'images/profile.png'))).toString('base64')}`;
 
 async function filesIn(directory) {
@@ -112,6 +112,12 @@ for (const [kind, sourceDirectory, labelKey] of [
 }
 
 const spriteSvg = `<svg width="1200" height="${cards.length * 630}" viewBox="0 0 1200 ${cards.length * 630}" xmlns="http://www.w3.org/2000/svg">${cards.map((card, index) => cardMarkup(card, index * 630)).join('')}</svg>`;
-const sprite = new Resvg(spriteSvg, { font: { fontBuffers: [font], loadSystemFonts: false } }).render().asPng();
+const sprite = new Resvg(spriteSvg, {
+  font: {
+    fontFiles: [fontPath],
+    loadSystemFonts: false,
+    defaultFontFamily: 'Noto Sans CJK JP',
+  },
+}).render().asPng();
 await Promise.all(cards.map((card, index) => sharp(sprite).extract({ left: 0, top: index * 630, width: 1200, height: 630 }).png().toFile(resolve(outputDirectory, card.filename))));
 console.log(`Generated Open Graph images in ${relative(root, outputDirectory)}.`);
