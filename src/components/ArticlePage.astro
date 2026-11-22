@@ -1,0 +1,140 @@
+---
+import { render } from 'astro:content';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { contentOgImage } from '../config/seo';
+import { site } from '../config/site';
+import {
+  categoryLabel, formatDate, publishedWritings, readingLabel, readingMinutes, slugOf, writingHref,
+  type Locale, type Writing,
+} from '../lib/writing';
+
+interface Props { post: Writing; locale: Locale; }
+const { post, locale } = Astro.props;
+const { Content, headings } = await render(post);
+const slug = slugOf(post);
+const ja = locale === 'ja';
+
+const posts = await publishedWritings(locale);
+const index = posts.findIndex((entry) => entry.id === post.id);
+const newer = index > 0 ? posts[index - 1] : undefined;
+const older = index < posts.length - 1 ? posts[index + 1] : undefined;
+const related = posts.filter((entry) => entry.id !== post.id && entry.data.category === post.data.category && entry !== newer && entry !== older).slice(0, 2);
+
+const otherLocale: Locale = ja ? 'en' : 'ja';
+const counterpart = (await publishedWritings(otherLocale)).find((entry) => slugOf(entry) === slug);
+const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+const minutes = readingMinutes(post.body, locale);
+const t = ja
+  ? { toc: '目次', published: '公開', updated: '更新', prev: '前の記事', next: '次の記事', related: '同じカテゴリの記事', back: '記事一覧へ', author: '書いた人', bio: 'テクノロジーを探究し、世界を旅する。よりよいシステムをつくるために、ソフトウェアエンジニアリング、デザイン、AI を学んでいます。', profile: 'プロフィール' }
+  : { toc: 'Contents', published: 'Published', updated: 'Updated', prev: 'Previous', next: 'Next', related: 'More in this category', back: 'All writing', author: 'Written by', bio: 'I explore technology and travel around the world to understand the world and build better systems.', profile: 'About me' };
+const base = ja ? '/ja' : '';
+---
+
+<SiteLayout
+  locale={locale}
+  title={`${post.data.title} — Sho Ikeda`}
+  description={post.data.description}
+  ogType="article"
+  ogImage={post.data.ogImage ?? contentOgImage('writing', post.id, locale)}
+  ogImageAlt={post.data.title}
+  publishedTime={post.data.publishedAt}
+  modifiedTime={post.data.updatedAt}
+  alternates={counterpart ? [{ href: writingHref(counterpart), locale: otherLocale }] : []}
+>
+  <div class="article-page shell">
+    <header class="article-header">
+      <p class="article-path"><a href={`${base}/writing/`}>~/writing</a><span>/{slug}</span></p>
+      <p class="article-category">{categoryLabel(post.data.category, locale)}</p>
+      <h1 class="article-title">{post.data.title}</h1>
+      <p class="article-lede">{post.data.description}</p>
+      <ul class="article-meta">
+        <li><span>{t.published}</span><time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time></li>
+        {post.data.updatedAt && <li><span>{t.updated}</span><time datetime={post.data.updatedAt.toISOString()}>{formatDate(post.data.updatedAt)}</time></li>}
+        <li>{readingLabel(minutes, locale)}</li>
+        <li class="article-tags">{post.data.tags.map((tag) => <span>#{tag}</span>)}</li>
+      </ul>
+    </header>
+
+    <div class:list={['article-body', { 'article-body--with-toc': toc.length >= 3 }]}>
+      {toc.length >= 3 && (
+        <aside class="article-toc" aria-label={t.toc}>
+          <details open>
+            <summary>{t.toc}</summary>
+            <ol>
+              {toc.map((heading) => <li class={`toc-depth-${heading.depth}`}><a href={`#${heading.slug}`}>{heading.text}</a></li>)}
+            </ol>
+          </details>
+        </aside>
+      )}
+      <article class="prose">
+        <Content />
+      </article>
+    </div>
+
+    <footer class="article-footer">
+      <section class="author-card" aria-label={t.author}>
+        <img src="/images/profile.png" alt="" width="72" height="72" loading="lazy" />
+        <div>
+          <p class="author-label">{t.author}</p>
+          <p class="author-name">Sho Ikeda</p>
+          <p class="author-bio">{t.bio}</p>
+          <p class="author-links"><a href={`${base}/about/`}>{t.profile} →</a><a href={site.github} target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href={site.x} target="_blank" rel="noopener noreferrer">X ↗</a></p>
+        </div>
+      </section>
+
+      {(older || newer) && (
+        <nav class="article-pager" aria-label={ja ? '前後の記事' : 'More writing'}>
+          {older ? <a class="pager-prev" href={writingHref(older)}><span>← {t.prev}</span><strong>{older.data.title}</strong></a> : <span />}
+          {newer ? <a class="pager-next" href={writingHref(newer)}><span>{t.next} →</span><strong>{newer.data.title}</strong></a> : <span />}
+        </nav>
+      )}
+
+      {related.length > 0 && (
+        <section class="article-related">
+          <h2>{t.related}</h2>
+          <ul>{related.map((entry) => <li><a href={writingHref(entry)}><time datetime={entry.data.publishedAt.toISOString()}>{formatDate(entry.data.publishedAt)}</time><strong>{entry.data.title}</strong></a></li>)}</ul>
+        </section>
+      )}
+
+      <p class="article-back"><a href={`${base}/writing/`}>← {t.back}</a></p>
+    </footer>
+  </div>
+</SiteLayout>
+
+<script>
+  // コードブロックにコピーボタンを付ける
+  for (const pre of document.querySelectorAll<HTMLPreElement>('.prose pre')) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'code-copy';
+    button.textContent = 'copy';
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(pre.querySelector('code')?.innerText ?? pre.innerText);
+        button.textContent = 'copied';
+      } catch {
+        button.textContent = 'failed';
+      }
+      setTimeout(() => { button.textContent = 'copy'; }, 1600);
+    });
+    pre.append(button);
+  }
+
+  // 目次で、いま読んでいる節を強調する
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>('.article-toc a')].map((link) => [decodeURIComponent(link.hash.slice(1)), link]),
+  );
+  if (links.size > 0 && 'IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        links.forEach((link) => link.removeAttribute('aria-current'));
+        links.get(entry.target.id)?.setAttribute('aria-current', 'true');
+      }
+    }, { rootMargin: '0px 0px -70% 0px' });
+    document.querySelectorAll('.prose h2[id], .prose h3[id]').forEach((heading) => observer.observe(heading));
+  }
+
+  // 画面の狭いときは、目次を閉じた状態で始める
+  if (window.matchMedia('(max-width: 1179px)').matches) document.querySelector('.article-toc details')?.removeAttribute('open');
+</script>

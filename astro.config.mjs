@@ -9,4 +9,8 @@ export default defineConfig({
     defaultLocale: 'en',
     routing: { prefixDefaultLocale: false },
   },
+  markdown: {
+    // 森をテーマにした配色。紙色の背景になじむ明るい版を使う
+    shikiConfig: { theme: 'everforest-light' },
+  },
 });

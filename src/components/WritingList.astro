@@ -1,0 +1,61 @@
+---
+import { categoryLabel, formatDate, publishedWritings, writingHref, type Locale } from '../lib/writing';
+
+interface Props { locale: Locale; }
+const { locale } = Astro.props;
+const ja = locale === 'ja';
+const posts = await publishedWritings(locale);
+const categories = [...new Set(posts.map((post) => post.data.category))];
+const years = [...new Set(posts.map((post) => post.data.publishedAt.getFullYear()))];
+---
+
+<section class="shell writing-index">
+  <div class="writing-filters" role="group" aria-label={ja ? 'カテゴリで絞り込む' : 'Filter by category'}>
+    <span class="writing-count">{posts.length} {ja ? '件の記事' : posts.length === 1 ? 'note' : 'notes'}</span>
+    <button type="button" data-category="all" aria-pressed="true">{ja ? 'すべて' : 'All'}</button>
+    {categories.map((category) => <button type="button" data-category={category} aria-pressed="false">{categoryLabel(category, locale)}</button>)}
+  </div>
+
+  {years.map((year) => (
+    <section class="writing-year" data-year={year}>
+      <h2 class="writing-year-heading">{year}</h2>
+      <ol class="article-list">
+        {posts.filter((post) => post.data.publishedAt.getFullYear() === year).map((post) => (
+          <li data-category={post.data.category}>
+            <a class="article-row" href={writingHref(post)}>
+              <time datetime={post.data.publishedAt.toISOString()}>{formatDate(post.data.publishedAt)}</time>
+              <div class="article-row-main">
+                <h3>{post.data.title}</h3>
+                <p>{post.data.description}</p>
+              </div>
+              <div class="article-row-side">
+                <span class="article-row-category">{categoryLabel(post.data.category, locale)}</span>
+                <span class="tags">{post.data.tags.map((tag) => `#${tag}`).join(' ')}</span>
+              </div>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+</section>
+
+<script>
+  // カテゴリのボタンで記事を絞り込む（JavaScript がなくても全件表示される）
+  const buttons = [...document.querySelectorAll<HTMLButtonElement>('.writing-filters button')];
+  for (const button of buttons) {
+    button.addEventListener('click', () => {
+      const category = button.dataset.category;
+      buttons.forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+      document.querySelectorAll<HTMLElement>('.writing-year').forEach((section) => {
+        let visible = 0;
+        section.querySelectorAll<HTMLElement>('li[data-category]').forEach((item) => {
+          const show = category === 'all' || item.dataset.category === category;
+          item.hidden = !show;
+          if (show) visible += 1;
+        });
+        section.hidden = visible === 0;
+      });
+    });
+  }
+</script>

@@ -11,15 +11,18 @@ interface MemoryItem {
   href: string;
 }
 
-const { memories } = Astro.props as { memories: MemoryItem[] };
+const { memories, locale = 'en' } = Astro.props as { memories: MemoryItem[]; locale?: 'en' | 'ja' };
+const t = locale === 'ja'
+  ? { loading: '地図を読み込んでいます…', list: 'すべての思い出', tiles: '地図の画像を読み込めませんでした。', failed: '地図を表示できませんでした。', hint: '下の一覧から、すべての思い出を見られます。' }
+  : { loading: 'Loading map…', list: 'All memories', tiles: 'The map tiles could not be loaded.', failed: 'The interactive map could not be loaded.', hint: 'You can still browse every memory in the list below.' };
 ---
 
 <section class="memory-page shell" aria-label="Memory Map">
-  <div id="memory-map" class="map-frame" aria-label="Interactive map of memories" aria-busy="true">
-    <p class="map-loading">Loading map…</p>
+  <div id="memory-map" class="map-frame" aria-label="Interactive map of memories" aria-busy="true" data-msg-tiles={t.tiles} data-msg-failed={t.failed} data-msg-hint={t.hint}>
+    <p class="map-loading">{t.loading}</p>
   </div>
   <section class="memory-fallback" aria-label="Memory list">
-    <h2>All memories</h2>
+    <h2 id="memory-list">{t.list}</h2>
     <ul class="memory-fallback-list">
       {memories.map((memory) => <li><a href={memory.href}><h3>{memory.title}</h3><p>{memory.summary}</p><small>{memory.locationLabel} · {memory.date.slice(0, 10)}</small></a></li>)}
     </ul>
@@ -42,10 +45,17 @@ const { memories } = Astro.props as { memories: MemoryItem[] };
   function showMapError(message: string) {
     if (!mapElement) return;
     mapElement.setAttribute('aria-busy', 'false');
+    mapElement.classList.add('map-frame--error');
     mapElement.replaceChildren();
-    const error = document.createElement('p');
+    const error = document.createElement('div');
     error.className = 'map-error';
-    error.textContent = message;
+    const title = document.createElement('p');
+    title.className = 'map-error-title';
+    title.textContent = message;
+    const hint = document.createElement('a');
+    hint.href = '#memory-list';
+    hint.textContent = `${mapElement.dataset.msgHint ?? ''} ↓`;
+    error.append(title, hint);
     mapElement.append(error);
   }
 
@@ -227,10 +237,10 @@ const { memories } = Astro.props as { memories: MemoryItem[] };
     map.once('remove', () => resizeObserver.disconnect());
     map.on('error', (event) => {
       console.error('MapLibre error:', event.error);
-      if (!map.isStyleLoaded()) showMapError('The map tiles could not be loaded. Please check your connection and try again.');
+      if (!map.isStyleLoaded()) showMapError(mapElement.dataset.msgTiles ?? '');
     });
   } catch (error) {
     console.error('Unable to load MapLibre.', error);
-    showMapError('The interactive map could not be loaded. Please try again later.');
+    showMapError(mapElement.dataset.msgFailed ?? '');
   }
 </script>

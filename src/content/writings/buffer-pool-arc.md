@@ -32,6 +32,8 @@ A database handles data on disk in fixed-size chunks called **pages** (8KB in Po
 
 ![How the in-memory buffer pool relates to disk. When a query asks for page 2, the page table shows it is in frame 1. If it were not there, the page would be read from disk into a free frame](/images/writings/buffer-pool-arc/en/buffer-pool.svg)
 
+*Figure 1: Buffer pool layout*
+
 A buffer pool consists of an array of slots that hold pages (**frames**) and a table recording which page is in which frame (the **page table**). When a query requests a page, the buffer pool first checks the page table.
 
 - If the page is there, it is a **hit**, and the page in memory is returned as is.
@@ -50,6 +52,8 @@ As a baseline I also measure **OPT** (Belady's optimal policy). OPT evicts the p
 I prepared four workloads.
 
 ![Access patterns of the four workloads. The x-axis is the access number and the y-axis is the page ID. W1 is random access skewed toward popular pages, W2 is a sawtooth that reads 150 pages in order over and over, W3 is W1 mixed with scan pages that are read only once, and W4 swaps its whole set of popular pages halfway through](/images/writings/buffer-pool-arc/en/workloads.svg)
+
+*Figure 2: Access patterns of the four workloads*
 
 | # | Name | What it does | Real-world analogy |
 | --- | --- | --- | --- |
@@ -98,6 +102,8 @@ LFU (Least Frequently Used) evicts the page that has been used the fewest times.
 
 ![Hit rates of LRU, LFU, and OPT. W1: LRU 58%, LFU 67%, OPT 75%. W2: LRU and LFU 0%, OPT 66%. W3: LRU 48%, LFU 65%, OPT 75%. W4: LRU 57%, LFU 34%, OPT 75%](/images/writings/buffer-pool-arc/en/round1.svg)
 
+*Figure 3: Round 1 hit rates (LRU, LFU, OPT)*
+
 In W1, where the set of popular pages never changes, LFU's counting pays off: it scores 67% against LRU's 58%.
 
 The big gaps open up in W3 and W4, and the loser switches sides between them.
@@ -125,6 +131,8 @@ The signal for that adjustment is whether a page it evicted turned out to be nee
 ARC keeps four lists.
 
 ![The four lists of ARC. From left to right: B1, T1, T2, B2. T1 and T2 hold the cached pages, c pages in total. B1 and B2 are ghosts that remember only the IDs of evicted pages. The border between T1 and T2 moves with p](/images/writings/buffer-pool-arc/en/arc-lists.svg)
+
+*Figure 4: The four lists of ARC*
 
 | List | Contents |
 | --- | --- |
@@ -154,6 +162,8 @@ In other words, the ghost lists are a "regret sensor": they measure whether past
 When ARC accesses page x, what it does depends on where x is.
 
 ![Flowchart of the four cases when ARC accesses a page. If the page is in T1 or T2, it is a hit and moves to the head of T2. If it is in B1, increase p; if in B2, decrease p; evict one page and put it at the head of T2. If it is nowhere, evict if full and put it at the head of T1](/images/writings/buffer-pool-arc/en/arc-flow.svg)
+
+*Figure 5: The four cases on each access*
 
 1. In T1 or T2 (a hit): move it to the head of T2. It has now been used at least twice, so it joins the frequent group.
 2. In B1: increase p, evict one page to make room, then put x at the head of T2.
@@ -259,6 +269,8 @@ I confirmed that the implementation keeps this rule with a test that checks it a
 
 ![Hit rates of LRU, LFU, ARC, and OPT. ARC scores 64% on W1, 0% on W2, 66% on W3, and 64% on W4](/images/writings/buffer-pool-arc/en/round2.svg)
 
+*Figure 6: Round 2 hit rates (with ARC)*
+
 | Workload | LRU | LFU | ARC | OPT |
 | --- | ---: | ---: | ---: | ---: |
 | W1 Skewed | 57.7% | **66.6%** | 64.1% | 75.5% |
@@ -273,6 +285,8 @@ ARC loses slightly to LFU on W1, but beats both LRU and LFU on W3 and W4. On W3,
 To see how ARC actually adjusts, let's look at p over time.
 
 ![p over time in ARC. The thin line is the actual value and the thick line is a moving average. On W1 and W3, p settles below 10. On W2 it stays at 0. On W4, p jumps right after the hot set changes and then comes back down](/images/writings/buffer-pool-arc/en/arc-p.svg)
+
+*Figure 7: p over time in ARC*
 
 On W1 and W3, p settles at small values below 10. That means ARC gives 90 or more of the cache's 100 pages to the frequent group (T2). In W3, scan pages enter T1 and are evicted from its tail without ever being used again. Nothing is evicted from T2, where the popular pages live, so the sequential flooding that hurt LRU does not happen.
 

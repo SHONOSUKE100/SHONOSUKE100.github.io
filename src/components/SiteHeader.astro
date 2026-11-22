@@ -16,7 +16,7 @@ const alternatePath = locale === 'ja' ? localPath : `/ja${localPath}`;
 
 <header class="site-header">
   <div class="shell header-inner">
-    <a class="brand" href="/" aria-label="Sho Ikeda — home">
+    <a class="brand" href={locale === 'ja' ? '/ja/' : '/'} aria-label="Sho Ikeda — home">
       <img class="brand-mark" src="/images/profile.png" alt="" width="48" height="48" />
       <span>SHO IKEDA</span>
     </a>
