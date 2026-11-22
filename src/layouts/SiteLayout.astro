@@ -56,6 +56,10 @@ const resolvedOgImage = ogImage ?? staticOgImage(staticPage ?? 'home', locale);
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <Seo title={title} description={description} image={resolvedOgImage} imageAlt={ogImageAlt} type={ogType} locale={locale} publishedTime={publishedTime} modifiedTime={modifiedTime} alternates={[...defaultAlternates, ...alternates]} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+JP:wght@400;500;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" />
+    <link rel="alternate" type="application/rss+xml" title={locale === 'ja' ? 'Sho Ikeda の記事' : 'Sho Ikeda — Writing'} href={locale === 'ja' ? '/ja/rss.xml' : '/rss.xml'} />
     <link rel="icon" type="image/png" href="/images/profile.png" />
     <link rel="apple-touch-icon" href="/images/profile.png" />
     <title>{title}</title>
@@ -64,6 +68,6 @@ const resolvedOgImage = ogImage ?? staticOgImage(staticPage ?? 'home', locale);
     <a class="skip-link" href="#main-content">Skip to content</a>
     <SiteHeader currentPath={Astro.url.pathname} locale={locale} />
     <main id="main-content"><slot /></main>
-    <SiteFooter />
+    <SiteFooter locale={locale} />
   </body>
 </html>
