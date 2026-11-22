@@ -1,24 +1,11 @@
 ---
-import { getCollection, render } from 'astro:content';
-import SiteLayout from '../../../layouts/SiteLayout.astro';
-import { contentOgImage } from '../../../config/seo';
+import ArticlePage from '../../../components/ArticlePage.astro';
+import { publishedWritings, slugOf } from '../../../lib/writing';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('writings', ({ data }) => !data.draft && data.locale === 'ja');
-  return posts.map((post) => ({ params: { slug: post.id.replace(/^ja\//, '') }, props: { post } }));
+  const posts = await publishedWritings('ja');
+  return posts.map((post) => ({ params: { slug: slugOf(post) }, props: { post } }));
 }
-
 const { post } = Astro.props;
-const { Content } = await render(post);
-const englishPost = (await getCollection('writings')).find((entry) => entry.id === post.id.replace(/^ja\//, '') && !entry.data.draft);
 ---
-
-<SiteLayout locale="ja" title={`${post.data.title} — Sho Ikeda`} description={post.data.description} ogType="article" ogImage={post.data.ogImage ?? contentOgImage('writing', post.id, 'ja')} ogImageAlt={post.data.title} publishedTime={post.data.publishedAt} modifiedTime={post.data.updatedAt} alternates={englishPost ? [{ href: `/writing/${post.id.replace(/^ja\//, '')}/`, locale: 'en' }] : []}>
-  <article class="article-content">
-    <p class="eyebrow">{post.data.category.replace('-', ' ')}</p>
-    <h1>{post.data.title}<span>。</span></h1>
-    <p class="lede">{post.data.description}</p>
-    <Content />
-    <p><a href="/ja/writing/">← 記事一覧へ戻る</a></p>
-  </article>
-</SiteLayout>
+<ArticlePage post={post} locale="ja" />
