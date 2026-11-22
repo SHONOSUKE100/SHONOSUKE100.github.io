@@ -6,7 +6,7 @@
 | --- | --- |
 | `policies.py` | LRU / LFU / ARC / OPT の実装 |
 | `workloads.py` | 4つのワークロード（W1〜W4） |
-| `run.py` | 実験を回し、`results.md` と記事用の SVG（`public/images/writings/buffer-pool-arc/`）を出力する |
+| `run.py` | 実験を回し、`results.md` と記事用の SVG を出力する（日本語版は `public/images/writings/buffer-pool-arc/`、英語版は同じ場所の `en/`） |
 | `test_policies.py` | 実装のテスト（ARC の不変条件、小さな例、OPT が上限になること） |
 
 ## 実行
