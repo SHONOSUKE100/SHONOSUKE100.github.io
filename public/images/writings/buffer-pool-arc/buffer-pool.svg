@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 820" role="img" aria-labelledby="title desc">
+  <title id="title">バッファプールの構成</title>
+  <desc id="desc">ディスク上のページを、メモリ上のバッファプールのフレームに読み込む。page table がどのページがどのフレームにあるかを管理する。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Hiragino Sans", "Noto Sans CJK JP", "Noto Sans JP", sans-serif; fill: #26323D; }
+    .h { font-size: 34px; font-weight: 700; }
+    .s { font-size: 24px; fill: #52606D; }
+    .m { font-size: 26px; font-weight: 700; }
+    .mono { font-family: Menlo, "SFMono-Regular", monospace; font-size: 24px; }
+  </style>
+  <rect width="1600" height="820" fill="#F4F6F8"/>
+
+  <!-- query -->
+  <rect x="610" y="40" width="380" height="80" rx="14" fill="#FFFFFF" stroke="#94A3B8" stroke-width="2"/>
+  <text x="800" y="92" text-anchor="middle" class="m">クエリ「page 2 をください」</text>
+
+  <!-- memory area -->
+  <rect x="80" y="170" width="1440" height="300" rx="22" fill="#E6F2F1" stroke="#0F766E" stroke-width="2.5"/>
+  <text x="120" y="222" class="h">メモリ</text>
+  <text x="120" y="258" class="s">速いが小さい・電源を切ると消える</text>
+
+  <!-- page table -->
+  <rect x="140" y="290" width="380" height="150" rx="12" fill="#FFFFFF" stroke="#0F766E" stroke-width="2"/>
+  <text x="330" y="326" text-anchor="middle" class="m">page table</text>
+  <text x="180" y="372" class="mono">page 2 → frame 1</text>
+  <text x="180" y="412" class="mono">page 5 → frame 0</text>
+
+  <!-- frames -->
+  <text x="1080" y="222" text-anchor="middle" class="m">バッファプール（フレームの配列）</text>
+  <g>
+    <rect x="660" y="260" width="190" height="170" rx="12" fill="#FFFFFF" stroke="#0F766E" stroke-width="2"/>
+    <text x="755" y="300" text-anchor="middle" class="s">frame 0</text>
+    <text x="755" y="372" text-anchor="middle" class="m">page 5</text>
+    <rect x="880" y="260" width="190" height="170" rx="12" fill="#FFFFFF" stroke="#0F766E" stroke-width="3.5"/>
+    <text x="975" y="300" text-anchor="middle" class="s">frame 1</text>
+    <text x="975" y="372" text-anchor="middle" class="m">page 2</text>
+    <rect x="1100" y="260" width="190" height="170" rx="12" fill="#FFFFFF" stroke="#0F766E" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="1195" y="300" text-anchor="middle" class="s">frame 2</text>
+    <text x="1195" y="372" text-anchor="middle" class="s">空き</text>
+    <rect x="1320" y="260" width="160" height="170" rx="12" fill="#FFFFFF" stroke="#0F766E" stroke-width="2" stroke-dasharray="8 6"/>
+    <text x="1400" y="300" text-anchor="middle" class="s">frame 3</text>
+    <text x="1400" y="372" text-anchor="middle" class="s">空き</text>
+  </g>
+  <path d="M520 365 C 600 365, 600 330, 878 330" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <path d="M800 120 L 800 200 C 800 240, 900 240, 960 255" fill="none" stroke="#475569" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <!-- disk -->
+  <rect x="80" y="560" width="1440" height="200" rx="22" fill="#FDF3E3" stroke="#B45309" stroke-width="2.5"/>
+  <text x="120" y="612" class="h">ディスク</text>
+  <text x="120" y="648" class="s">遅いが大きい・電源を切っても残る</text>
+  <g class="mono">
+    <rect x="520" y="600" width="110" height="120" rx="10" fill="#FFFFFF" stroke="#B45309" stroke-width="2"/><text x="575" y="668" text-anchor="middle">p0</text>
+    <rect x="650" y="600" width="110" height="120" rx="10" fill="#FFFFFF" stroke="#B45309" stroke-width="2"/><text x="705" y="668" text-anchor="middle">p1</text>
+    <rect x="780" y="600" width="110" height="120" rx="10" fill="#FFFFFF" stroke="#B45309" stroke-width="2"/><text x="835" y="668" text-anchor="middle">p2</text>
+    <rect x="910" y="600" width="110" height="120" rx="10" fill="#FFFFFF" stroke="#B45309" stroke-width="2"/><text x="965" y="668" text-anchor="middle">p3</text>
+    <rect x="1040" y="600" width="110" height="120" rx="10" fill="#FFFFFF" stroke="#B45309" stroke-width="2"/><text x="1095" y="668" text-anchor="middle">p4</text>
+    <rect x="1170" y="600" width="110" height="120" rx="10" fill="#FFFFFF" stroke="#B45309" stroke-width="2"/><text x="1225" y="668" text-anchor="middle">p5</text>
+    <text x="1340" y="668">…</text>
+  </g>
+  <path d="M1190 595 L 1190 438" fill="none" stroke="#475569" stroke-width="2.5" stroke-dasharray="10 7" marker-end="url(#arrow)"/>
+  <text x="1210" y="525" class="s">ミスしたら読み込む</text>
+  <text x="1210" y="557" class="s">（満杯なら1つ追い出す）</text>
+</svg>

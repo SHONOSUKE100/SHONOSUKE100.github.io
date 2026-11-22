@@ -36,7 +36,9 @@ permissions:
 jobs:
   create-translations:
     runs-on: ubuntu-latest
-    if: github.actor != 'github-actions[bot]'
+    # push での自動翻訳は任意。リポジトリ変数 AUTO_TRANSLATE を 'true' にしたときだけ動く。
+    # 手動実行（workflow_dispatch）はいつでも使える。
+    if: github.actor != 'github-actions[bot]' && (github.event_name == 'workflow_dispatch' || vars.AUTO_TRANSLATE == 'true')
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
     steps:

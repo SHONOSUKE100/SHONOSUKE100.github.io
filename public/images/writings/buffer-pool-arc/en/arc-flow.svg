@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">The four cases when ARC accesses a page</title>
+  <desc id="desc">If the page is in T1 or T2, it is a hit and moves to the head of T2. If it is in B1, increase p; if in B2, decrease p; then evict one page and put it at the head of T2. Otherwise, evict if needed and put it at the head of T1.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <style>
+    text { font-family: "Helvetica Neue", Arial, sans-serif; fill: #26323D; }
+    .h { font-size: 30px; font-weight: 700; }
+    .m { font-size: 25px; font-weight: 700; }
+    .s { font-size: 22px; fill: #52606D; }
+    .tag { font-size: 20px; font-weight: 700; fill: #FFFFFF; }
+    .line { fill: none; stroke: #475569; stroke-width: 2.5; marker-end: url(#arrow); }
+  </style>
+  <rect width="1600" height="900" fill="#F4F6F8"/>
+
+  <rect x="620" y="40" width="360" height="84" rx="42" fill="#26323D"/>
+  <text x="800" y="94" text-anchor="middle" class="h" style="fill:#FFFFFF">Access page x</text>
+
+  <!-- question -->
+  <polygon points="800,170 1000,250 800,330 600,250" fill="#FFFFFF" stroke="#475569" stroke-width="2.5"/>
+  <text x="800" y="245" text-anchor="middle" class="m">Where is x?</text>
+  <text x="800" y="280" text-anchor="middle" class="s">T1 / T2 / B1 / B2</text>
+  <path d="M800 124 L800 166" class="line"/>
+
+  <!-- branches -->
+  <path d="M800 330 L800 360 L215 360 L215 420" class="line"/>
+  <path d="M800 360 L605 360 L605 420" class="line"/>
+  <path d="M800 360 L995 360 L995 420" class="line"/>
+  <path d="M800 360 L1385 360 L1385 420" class="line"/>
+
+  <!-- case 1 -->
+  <rect x="40" y="430" width="350" height="400" rx="18" fill="#FFFFFF" stroke="#475569" stroke-width="2.5"/>
+  <rect x="40" y="430" width="350" height="56" rx="18" fill="#475569"/><rect x="40" y="460" width="350" height="26" fill="#475569"/>
+  <text x="215" y="468" text-anchor="middle" class="tag">Case 1: in T1 or T2</text>
+  <text x="215" y="545" text-anchor="middle" class="h">Hit</text>
+  <text x="215" y="610" text-anchor="middle" class="s">No disk read</text>
+  <text x="215" y="690" text-anchor="middle" class="m">To head of T2</text>
+  <text x="215" y="735" text-anchor="middle" class="s">Used twice or more,</text>
+  <text x="215" y="767" text-anchor="middle" class="s">so it is frequent</text>
+
+  <!-- case 2 -->
+  <rect x="430" y="430" width="350" height="400" rx="18" fill="#FFFFFF" stroke="#B45309" stroke-width="2.5"/>
+  <rect x="430" y="430" width="350" height="56" rx="18" fill="#B45309"/><rect x="430" y="460" width="350" height="26" fill="#B45309"/>
+  <text x="605" y="468" text-anchor="middle" class="tag">Case 2: in B1 (ghost)</text>
+  <text x="605" y="545" text-anchor="middle" class="h">Miss</text>
+  <text x="605" y="610" text-anchor="middle" class="m" style="fill:#B45309">Increase p</text>
+  <text x="605" y="650" text-anchor="middle" class="s">Evict one page</text>
+  <text x="605" y="720" text-anchor="middle" class="m">To head of T2</text>
+  <text x="605" y="767" text-anchor="middle" class="s">Evicted recent too early</text>
+
+  <!-- case 3 -->
+  <rect x="820" y="430" width="350" height="400" rx="18" fill="#FFFFFF" stroke="#0F766E" stroke-width="2.5"/>
+  <rect x="820" y="430" width="350" height="56" rx="18" fill="#0F766E"/><rect x="820" y="460" width="350" height="26" fill="#0F766E"/>
+  <text x="995" y="468" text-anchor="middle" class="tag">Case 3: in B2 (ghost)</text>
+  <text x="995" y="545" text-anchor="middle" class="h">Miss</text>
+  <text x="995" y="610" text-anchor="middle" class="m" style="fill:#0F766E">Decrease p</text>
+  <text x="995" y="650" text-anchor="middle" class="s">Evict one page</text>
+  <text x="995" y="720" text-anchor="middle" class="m">To head of T2</text>
+  <text x="995" y="767" text-anchor="middle" class="s">Evicted frequent too early</text>
+
+  <!-- case 4 -->
+  <rect x="1210" y="430" width="350" height="400" rx="18" fill="#FFFFFF" stroke="#475569" stroke-width="2.5" stroke-dasharray="10 7"/>
+  <rect x="1210" y="430" width="350" height="56" rx="18" fill="#94A3B8"/><rect x="1210" y="460" width="350" height="26" fill="#94A3B8"/>
+  <text x="1385" y="468" text-anchor="middle" class="tag">Case 4: nowhere</text>
+  <text x="1385" y="545" text-anchor="middle" class="h">Miss</text>
+  <text x="1385" y="610" text-anchor="middle" class="s">p unchanged</text>
+  <text x="1385" y="650" text-anchor="middle" class="s">Evict one page if full</text>
+  <text x="1385" y="720" text-anchor="middle" class="m">To head of T1</text>
+  <text x="1385" y="767" text-anchor="middle" class="s">A new page</text>
+
+  <text x="800" y="880" text-anchor="middle" class="s">When evicting: from the tail of T1 if T1 is larger than p, otherwise from the tail of T2. The evicted page’s ID goes to B1 / B2.</text>
+</svg>
