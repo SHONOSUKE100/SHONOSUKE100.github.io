@@ -92,7 +92,7 @@ class LRU:
         return False
 ```
 
-Reordering on every access is expensive, so real databases often use CLOCK, a lighter approximation of LRU. PostgreSQL's clock-sweep belongs to this family. It keeps a single "recently used" bit per page, sweeps over the pages like the hand of a clock, and evicts the first page whose bit is not set.
+Reordering on every access is expensive, so real databases often use CLOCK, a lighter approximation of LRU. Basic CLOCK keeps a single "recently used" bit per page, sweeps over the pages like the hand of a clock, and evicts the first page whose bit is not set. PostgreSQL's clock-sweep belongs to this family, but instead of one bit it keeps a small usage counter (usage_count) per page. Each time the hand passes, it decrements the counter, and it evicts a page whose counter has reached 0.
 
 ### LFU: What Is Used Often Will Keep Being Used
 
@@ -284,11 +284,11 @@ ARC loses slightly to LFU on W1, but beats both LRU and LFU on W3 and W4. On W3,
 
 To see how ARC actually adjusts, let's look at p over time.
 
-![p over time in ARC. The thin line is the actual value and the thick line is a moving average. On W1 and W3, p settles below 10. On W2 it stays at 0. On W4, p jumps right after the hot set changes and then comes back down](/images/writings/buffer-pool-arc/en/arc-p.svg)
+![p over time in ARC. The thin line is the actual value and the thick line is a moving average. On W1 and W3, p stays below 10 most of the time. On W2 it stays at 0. On W4, p jumps right after the hot set changes and then comes back down](/images/writings/buffer-pool-arc/en/arc-p.svg)
 
 *Figure 7: p over time in ARC*
 
-On W1 and W3, p settles at small values below 10. That means ARC gives 90 or more of the cache's 100 pages to the frequent group (T2). In W3, scan pages enter T1 and are evicted from its tail without ever being used again. Nothing is evicted from T2, where the popular pages live, so the sequential flooding that hurt LRU does not happen.
+On W1 and W3, p stays at small values below 10 most of the time (the median is 5 on W1 and 2 on W3). That means ARC gives roughly 90 or more of the cache's 100 pages to the frequent group (T2). In W3, scan pages enter T1 and are evicted from its tail without ever being used again. Almost nothing is evicted from T2, where the popular pages live, so the sequential flooding that hurt LRU does not happen.
 
 On W4, p jumps right after the hot set changes. Because p is small, each new popular page that enters T1 is evicted from the tail of T1 at the next eviction. But it is popular, so it is accessed again soon and found in B1, again and again. ARC reads this as "evicted recent pages too early" and temporarily gives T1 more room. Once the new popular pages have moved into T2, p comes back down. Where LFU lost hit rate because of stale counts, ARC used the number of hits in B1 to shift the balance.
 
@@ -312,7 +312,7 @@ No replacement policy fits every case. ARC's strength is that it rarely loses ba
 
 ARC has costs too. The ghost lists add bookkeeping, up to twice the cache's capacity in page IDs. And because the lists are reordered on every access, many threads accessing at once tend to contend for the lock that protects them. That is one reason lighter policies such as CLOCK are popular.
 
-As for real-world use, ZFS (a file system) uses ARC for its cache. PostgreSQL adopted ARC in 8.0 but removed it soon after because of IBM's patent, replacing it with a different policy called 2Q in 8.0.2. Since 8.1 it has used clock-sweep. MySQL InnoDB splits its LRU list into an old part and a young part. A new page first goes into old and moves to young only when it is used again, so pages read by a scan rarely reach young and sequential flooding is less likely. The idea is close to ARC's T1 and T2.
+As for real-world use, ZFS (a file system) uses a modified version of ARC for its cache. PostgreSQL adopted ARC in 8.0, but to avoid IBM's pending patent on ARC it replaced it with a different policy called 2Q in 8.0.2. Since 8.1 it has used clock-sweep. MySQL InnoDB splits its LRU list into an old part and a young part. A new page first goes into old and moves to young when it is used again. However, a page does not move to young if it is used again within a set time of its first access (1 second by default). As a result, pages read by a scan rarely reach young and sequential flooding is less likely. The idea is close to ARC's T1 and T2.
 
 As an aside, the design of "split memory into fixed-size slots, track where things are with a table, and choose carefully what to evict when space runs out" shows up outside databases too. vLLM's PagedAttention, an LLM inference engine technique, splits GPU memory into fixed-size blocks and manages them with a block table. The field is different, but the problems you hit when designing a cache are the same.
 
