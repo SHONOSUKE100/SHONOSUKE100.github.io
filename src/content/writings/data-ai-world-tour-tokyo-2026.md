@@ -130,17 +130,9 @@ When you want to show live analytics in a dashboard or an application, the usual
 
 Lakehouse//RT tries to solve these by reading analytics tables (Delta or Iceberg) directly, without copying, and answering in milliseconds. Because the data isn't converted into a proprietary format, there's no lock-in, and permissions and lineage stay consistent under Unity Catalog.
 
-### Numbers and Positioning
+### What It Is For
 
-The talk showed these figures:
-
-- Minimum latency of 10 ms
-- 12,000 queries per second
-- 2.8x faster on ClickBench, a benchmark that runs aggregation queries on one wide table, and about 3x faster on data that joins multiple tables
-
-The talk didn't say what these were compared against, so I'm treating them as vendor-reported numbers. Real-time analytics databases like ClickHouse are often weak at joins, so I'm personally interested in the claim that it stays fast with joins.
-
-The talk was also clear about what it is for:
+The talk was clear about what it is for:
 
 | Good fit | Not a good fit |
 | --- | --- |
