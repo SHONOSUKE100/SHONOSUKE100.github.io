@@ -1,7 +1,7 @@
 ---
 title: "Architecture Conference 2026 参加レポート"
 locale: ja
-description: "設計原則から AI エージェント、データメッシュ、C4 モデルまで。Architecture Conference 2026 で聞いた7つのセッションの学びと感想"
+description: "設計原則から AI エージェント、データメッシュ、C4 モデルまで。Architecture Conference 2026 で聞いた8つのセッションの学びと感想"
 publishedAt: 2026-11-28
 category: "software-design"
 tags: ["architecture", "conference", "ai"]
@@ -9,6 +9,10 @@ draft: false
 ---
 
 11月26日に、Findy 主催の [Architecture Conference 2026](https://architecture-con.findy-tools.io/2026) に行ってきました。会場は羽田空港です。
+
+![羽田空港のホールに設けられた会場。提灯が吊るされ、木のやぐらに「アーキテクチャ Conference 2026」の看板が掛かっている。左奥の受付に参加者が並んでいる](/images/writings/architecture-conference-2026/venue.jpg)
+
+*会場の様子（羽田空港）*
 
 参加は昨年に続いて2回目になります。ソフトウェアアーキテクチャに興味を持ったのは、昨年このカンファレンスに参加したのがきっかけでした。同時に、アーキテクチャの難しさを痛感し、技術の面でも業務ドメインの面でも、まだまだ学ぶことだらけだと思い知らされました。
 

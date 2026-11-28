@@ -10,6 +10,10 @@ draft: false
 
 On November 26, I attended [Architecture Conference 2026](https://architecture-con.findy-tools.io/2026), hosted by Findy at Haneda Airport.
 
+![The venue in a hall at Haneda Airport, with paper lanterns overhead and an "Architecture Conference 2026" sign on a wooden yagura stage. Attendees are lining up at the reception desk in the back left](/images/writings/architecture-conference-2026/venue.jpg)
+
+*The venue at Haneda Airport*
+
 I also attended this conference last year, which sparked my interest in software architecture. At the same time, I realized how challenging architecture was and how much I still needed to learn, both in terms of technical skills and business domain knowledge.
 
 A year later, I found myself able to understand the discussions much more deeply. Over the past year, I have had opportunities to study software architecture through my onboarding at work, learning Java, and reading books such as *Clean Architecture* and other books on design patterns.
