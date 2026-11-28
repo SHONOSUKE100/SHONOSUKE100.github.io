@@ -22,7 +22,10 @@ const related = posts.filter((entry) => entry.id !== post.id && entry.data.categ
 
 const otherLocale: Locale = ja ? 'en' : 'ja';
 const counterpart = (await publishedWritings(otherLocale)).find((entry) => slugOf(entry) === slug);
-const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+// 「参考リンク」のように節ごとに繰り返す小見出しは、目次では道しるべにならないので外す
+const h3Count = new Map<string, number>();
+headings.filter((heading) => heading.depth === 3).forEach((heading) => h3Count.set(heading.text, (h3Count.get(heading.text) ?? 0) + 1));
+const toc = headings.filter((heading) => heading.depth === 2 || (heading.depth === 3 && h3Count.get(heading.text) === 1));
 const minutes = readingMinutes(post.body, locale);
 const t = ja
   ? { toc: '目次', published: '公開', updated: '更新', prev: '前の記事', next: '次の記事', related: '同じカテゴリの記事', back: '記事一覧へ', author: '書いた人', bio: 'テクノロジーを探究し、世界を旅する。よりよいシステムをつくるために、ソフトウェアエンジニアリング、デザイン、AI を学んでいます。', profile: 'プロフィール' }
