@@ -138,7 +138,7 @@ The talk showed these figures:
 - 12,000 queries per second
 - 2.8x faster on ClickBench, a benchmark that runs aggregation queries on one wide table, and about 3x faster on data that joins multiple tables
 
-I couldn't catch what these were compared against, so I'm treating them as vendor-reported numbers. Real-time analytics databases like ClickHouse are often weak at joins, so I'm personally interested in the claim that it stays fast with joins.
+The talk didn't say what these were compared against, so I'm treating them as vendor-reported numbers. Real-time analytics databases like ClickHouse are often weak at joins, so I'm personally interested in the claim that it stays fast with joins.
 
 The talk was also clear about what it is for:
 
