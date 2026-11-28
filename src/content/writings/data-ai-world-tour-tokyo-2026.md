@@ -10,6 +10,10 @@ draft: false
 
 On November 27, I attended Databricks' Data + AI World Tour Tokyo at The Prince Park Tower Tokyo. I had been at [Architecture Conference 2026](/writing/architecture-conference-2026/) the day before, so it was two conferences in two days.
 
+![Tokyo Tower rising behind a row of yellow ginkgo trees under a clear blue sky](/images/writings/data-ai-world-tour-tokyo-2026/tokyo-tower.jpg)
+
+*Tokyo Tower and ginkgo trees near the venue*
+
 I'm currently self-studying CMU's database course (15-445/645). So this time, rather than focusing on the new product features themselves, I listened with one question in mind: what is actually happening inside? This article collects what I heard and what I thought about along the way.
 
 In short, what stayed with me most was that many of Databricks' products follow the same principle:
